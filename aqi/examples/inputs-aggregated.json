@@ -1,0 +1,190 @@
+{
+  "aqi_version": "0.1",
+  "mode": "inputs",
+  "subject": {
+    "title": "Payments API public ingress change",
+    "reference": "CHG-2026-0412",
+    "date": "2026-06-10",
+    "requestor": "J. Citizen",
+    "artefacts": [
+      {
+        "artefact_id": "A1",
+        "name": "Change request narrative",
+        "version": "1.2",
+        "dated": "2026-05-28"
+      },
+      {
+        "artefact_id": "A2",
+        "name": "Network diagram",
+        "version": "unknown",
+        "dated": "2024-11-02"
+      }
+    ]
+  },
+  "complexity": {
+    "tier": "T3",
+    "max_driver": "trust_boundaries",
+    "drivers": {
+      "change_depth": "T2",
+      "trust_boundaries": "T3",
+      "data_sensitivity": "T3",
+      "integration_surface": "T2",
+      "technology_novelty": "T1",
+      "reversibility": "T2"
+    },
+    "effort_tier": "T3"
+  },
+  "dimensions": [
+    {
+      "id": "completeness",
+      "gating": true,
+      "in_composite": true,
+      "score": 2,
+      "evidence": [
+        {
+          "artefact_id": "A1",
+          "location": "ss2-4",
+          "note": "core flows described; WAF config absent"
+        }
+      ],
+      "rationale": "Core artefacts present, gaps bounded and identified.",
+      "letter": "C"
+    },
+    {
+      "id": "consistency",
+      "gating": true,
+      "in_composite": true,
+      "score": 2,
+      "evidence": [
+        {
+          "artefact_id": "A1",
+          "location": "s3.2 vs A2 element D2"
+        }
+      ],
+      "rationale": "One localised contradiction, resolvable with a single question.",
+      "letter": "C"
+    },
+    {
+      "id": "currency",
+      "gating": false,
+      "in_composite": true,
+      "score": 1,
+      "evidence": [
+        {
+          "artefact_id": "A2",
+          "location": "title block",
+          "note": "diagram predates 2025 zone redesign"
+        }
+      ],
+      "rationale": "Key artefact demonstrably stale.",
+      "letter": "D"
+    },
+    {
+      "id": "conformity",
+      "gating": false,
+      "in_composite": false,
+      "score": 3,
+      "evidence": [
+        {
+          "artefact_id": "A1",
+          "location": "s5",
+          "note": "standard LB+WAF ingress pattern, minor deviation justified"
+        }
+      ],
+      "letter": "B"
+    },
+    {
+      "id": "clarity",
+      "gating": false,
+      "in_composite": true,
+      "score": 1,
+      "sub_scores": {
+        "surface_clarity": 3,
+        "specificity": 1
+      },
+      "evidence": [
+        {
+          "artefact_id": "A1",
+          "location": "s4",
+          "note": "'industry-standard encryption' - unfalsifiable"
+        }
+      ],
+      "rationale": "Fluent but hedged on security-relevant claims; slop signature.",
+      "letter": "D"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "F002",
+      "dimension": "currency",
+      "severity_raw": "high",
+      "effort": "low",
+      "action": "Network diagram predates 2025 zone redesign; obtain current version",
+      "evidence_ref": {
+        "artefact_id": "A2",
+        "location": "title block"
+      },
+      "requestor_ask": {
+        "document": "Network diagram",
+        "suggested_owner": "Architecture",
+        "ask_text": "Provide a current network diagram reflecting the post-redesign zone model and the proposed end-state ingress path, dated and versioned.",
+        "must_fix": true
+      },
+      "severity": "critical",
+      "tier_uplifted": true
+    },
+    {
+      "finding_id": "F003",
+      "dimension": "clarity",
+      "severity_raw": "medium",
+      "effort": "low",
+      "action": "Pin down 'industry-standard encryption' claim in s4",
+      "evidence_ref": {
+        "artefact_id": "A1",
+        "location": "s4"
+      },
+      "requestor_ask": {
+        "document": "Change request narrative",
+        "suggested_owner": "J. Citizen",
+        "ask_text": "State the specific encryption for data in transit between gateway and payments service: protocol and version, termination point, and how enforcement is verified.",
+        "must_fix": false
+      },
+      "severity": "high",
+      "tier_uplifted": true
+    },
+    {
+      "finding_id": "F001",
+      "dimension": "completeness",
+      "severity_raw": "medium",
+      "effort": "medium",
+      "action": "Obtain WAF ruleset configuration for the new ingress",
+      "evidence_ref": {
+        "artefact_id": "A1",
+        "location": "s2"
+      },
+      "requestor_ask": {
+        "document": "Change request narrative",
+        "suggested_owner": "Network team",
+        "ask_text": "Provide the WAF configuration for the new public ingress: ruleset name and version, mode (block/monitor), and the components it fronts. Dated and versioned.",
+        "must_fix": true
+      },
+      "severity": "high",
+      "tier_uplifted": true
+    }
+  ],
+  "composite": {
+    "raw_weighted_mean": 1.5,
+    "lowest_gating_score": 2,
+    "cap": 3,
+    "value": 1.5,
+    "letter": "D",
+    "hard_rule_triggered": false
+  },
+  "gate": {
+    "decision": "return",
+    "reasons": [
+      "composite 1.50 below 2.0 threshold"
+    ],
+    "caveats": []
+  }
+}

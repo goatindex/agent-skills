@@ -1,0 +1,165 @@
+{
+  "aqi_version": "0.1",
+  "mode": "outputs",
+  "subject": {
+    "title": "Payments API ingress assessment",
+    "reference": "ASMT-2026-0119",
+    "date": "2026-06-10",
+    "assessor": "Security team",
+    "artefacts": [
+      {
+        "artefact_id": "R1",
+        "name": "Assessment report",
+        "version": "0.9"
+      }
+    ]
+  },
+  "complexity": {
+    "tier": "T3",
+    "max_driver": "trust_boundaries",
+    "drivers": {
+      "change_depth": "T2",
+      "trust_boundaries": "T3",
+      "data_sensitivity": "T3",
+      "integration_surface": "T2",
+      "technology_novelty": "T1",
+      "reversibility": "T2"
+    }
+  },
+  "dimensions": [
+    {
+      "id": "coverage",
+      "gating": true,
+      "in_composite": true,
+      "score": 3,
+      "evidence": [
+        {
+          "artefact_id": "R1",
+          "location": "ss3-7"
+        }
+      ],
+      "letter": "B"
+    },
+    {
+      "id": "traceability",
+      "gating": true,
+      "in_composite": true,
+      "score": 3,
+      "evidence": [
+        {
+          "artefact_id": "R1",
+          "location": "appendix A trace matrix"
+        }
+      ],
+      "letter": "B"
+    },
+    {
+      "id": "consistency",
+      "gating": false,
+      "in_composite": true,
+      "score": 4,
+      "evidence": [
+        {
+          "artefact_id": "R1",
+          "location": "throughout"
+        }
+      ],
+      "letter": "A"
+    },
+    {
+      "id": "conformity",
+      "gating": false,
+      "in_composite": false,
+      "score": 4,
+      "evidence": [
+        {
+          "artefact_id": "R1",
+          "location": "s8",
+          "note": "controls cited to internal catalogue"
+        }
+      ],
+      "letter": "A"
+    },
+    {
+      "id": "actionability",
+      "gating": false,
+      "in_composite": true,
+      "score": 3,
+      "evidence": [
+        {
+          "artefact_id": "R1",
+          "location": "s8 control table"
+        }
+      ],
+      "letter": "B"
+    },
+    {
+      "id": "clarity",
+      "gating": false,
+      "in_composite": true,
+      "score": 3,
+      "sub_scores": {
+        "surface_clarity": 3,
+        "specificity": 3
+      },
+      "evidence": [
+        {
+          "artefact_id": "R1",
+          "location": "throughout"
+        }
+      ],
+      "letter": "B"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "F000",
+      "dimension": "coupling",
+      "severity_raw": "high",
+      "effort": "high",
+      "action": "Assessment self-quality (pre-cap mean 3.2) exceeds what the inputs support (cap 2.5, input composite 1.5). Either evidence independent discovery in the traceability chain, re-score the inputs with assessor-gathered evidence added to the artefact register, or temper the assessment's confidence.",
+      "evidence_ref": {
+        "artefact_id": "composite",
+        "location": "coupling cap"
+      },
+      "requestor_ask": null,
+      "severity": "critical",
+      "tier_uplifted": true
+    }
+  ],
+  "coupling": {
+    "independent_discovery_evidenced": true,
+    "independent_discovery_refs": [
+      "R1 appendix B: config inspection of LB and WAF",
+      "R1 s4: interview with network team 2026-06-03"
+    ],
+    "input_run_ref": "CHG-2026-0412",
+    "input_composite": 1.5,
+    "cap": 2.5,
+    "breach": true
+  },
+  "patternability": {
+    "flag": "bespoke",
+    "eligibility_check": {
+      "composite_gte_3": false,
+      "traceability_gte_3": true,
+      "conformity_gte_3": true
+    }
+  },
+  "composite": {
+    "raw_weighted_mean": 3.2,
+    "lowest_gating_score": 3,
+    "cap": 4,
+    "value": 2.5,
+    "letter": "B",
+    "hard_rule_triggered": false
+  },
+  "gate": {
+    "decision": "proceed",
+    "reasons": [
+      "composite 2.50; gates clear",
+      "coupling cap breached: confidence exceeds what inputs support \u2014 logged as a finding"
+    ],
+    "caveats": []
+  }
+}

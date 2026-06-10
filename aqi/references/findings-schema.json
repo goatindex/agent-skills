@@ -1,0 +1,191 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "aqi-findings-schema-v0.1",
+  "title": "AQI Canonical Findings Object",
+  "description": "Single source of truth for one AQI evaluation run (inputs mode or outputs mode). All renderers (assessor view, requestor gap letter) and the aggregation script consume this object. Scores are authored by the evaluator; composite, caps, gate, and sort order are computed deterministically by aggregate.py and must not be hand-authored.",
+  "type": "object",
+  "required": ["aqi_version", "mode", "subject", "complexity", "dimensions", "findings"],
+  "additionalProperties": false,
+  "properties": {
+    "aqi_version": { "const": "0.1" },
+    "mode": { "enum": ["inputs", "outputs"] },
+    "subject": {
+      "type": "object",
+      "required": ["title", "reference", "date"],
+      "properties": {
+        "title": { "type": "string" },
+        "reference": { "type": "string", "description": "Change/assessment record identifier" },
+        "date": { "type": "string", "format": "date" },
+        "requestor": { "type": "string" },
+        "assessor": { "type": "string" },
+        "artefacts": {
+          "type": "array",
+          "description": "Register of artefacts evaluated; evidence_ref entries point here by artefact_id",
+          "items": {
+            "type": "object",
+            "required": ["artefact_id", "name"],
+            "properties": {
+              "artefact_id": { "type": "string" },
+              "name": { "type": "string" },
+              "version": { "type": "string" },
+              "dated": { "type": "string" },
+              "owner": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "complexity": {
+      "type": "object",
+      "required": ["tier", "drivers"],
+      "properties": {
+        "tier": { "enum": ["T1", "T2", "T3", "T4"] },
+        "effort_tier": { "enum": ["T1", "T2", "T3", "T4"] },
+        "max_driver": { "type": "string", "description": "Which driver set the tier (max-rule)" },
+        "drivers": {
+          "type": "object",
+          "required": ["change_depth", "trust_boundaries", "data_sensitivity", "integration_surface", "technology_novelty", "reversibility"],
+          "additionalProperties": false,
+          "properties": {
+            "change_depth": { "enum": ["T1", "T2", "T3", "T4"] },
+            "trust_boundaries": { "enum": ["T1", "T2", "T3", "T4"] },
+            "data_sensitivity": { "enum": ["T1", "T2", "T3", "T4"] },
+            "integration_surface": { "enum": ["T1", "T2", "T3", "T4"] },
+            "technology_novelty": { "enum": ["T1", "T2", "T3", "T4"] },
+            "reversibility": { "enum": ["T1", "T2", "T3", "T4"] }
+          }
+        }
+      }
+    },
+    "dimensions": {
+      "type": "array",
+      "description": "Inputs mode requires: completeness, consistency, currency, conformity, clarity. Outputs mode requires: coverage, traceability, consistency, conformity, actionability, clarity.",
+      "items": {
+        "type": "object",
+        "required": ["id", "gating", "in_composite", "score", "evidence"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "enum": ["completeness", "consistency", "currency", "conformity", "clarity", "coverage", "traceability", "actionability"] },
+          "gating": { "type": "boolean" },
+          "in_composite": { "type": "boolean", "description": "false for conformity (neutral valence) — never averaged" },
+          "score": { "type": ["integer", "null"], "minimum": 0, "maximum": 4, "description": "null only when unscorable=true; treated as 0 for gating" },
+          "unscorable": { "type": "boolean", "default": false },
+          "letter": { "enum": ["A", "B", "C", "D", "F"], "description": "Computed: 4=A 3=B 2=C 1=D 0=F" },
+          "weight": { "type": "number", "default": 1.0 },
+          "sub_scores": {
+            "type": "object",
+            "description": "Clarity only. Dimension score must equal min(surface_clarity, specificity) — enforced by aggregate.py.",
+            "properties": {
+              "surface_clarity": { "type": "integer", "minimum": 0, "maximum": 4 },
+              "specificity": { "type": "integer", "minimum": 0, "maximum": 4 }
+            }
+          },
+          "evidence": {
+            "type": "array",
+            "minItems": 1,
+            "description": "No citation, no score. Empty evidence with a non-null score is a validation failure.",
+            "items": {
+              "type": "object",
+              "required": ["artefact_id", "location"],
+              "properties": {
+                "artefact_id": { "type": "string" },
+                "location": { "type": "string", "description": "Section, page, diagram element, line — specific enough to relocate" },
+                "note": { "type": "string" }
+              }
+            }
+          },
+          "rationale": { "type": "string", "description": "One-paragraph justification mapping evidence to the anchor met" }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["finding_id", "dimension", "severity_raw", "effort", "action", "evidence_ref"],
+        "additionalProperties": false,
+        "properties": {
+          "finding_id": { "type": "string", "pattern": "^F[0-9]{3}$" },
+          "dimension": { "type": "string" },
+          "severity_raw": { "enum": ["critical", "high", "medium", "low"], "description": "Pre-uplift severity as judged" },
+          "severity": { "enum": ["critical", "high", "medium", "low"], "description": "Computed: raw uplifted one band at T3/T4" },
+          "tier_uplifted": { "type": "boolean" },
+          "effort": { "enum": ["low", "medium", "high"] },
+          "action": { "type": "string", "description": "Assessor-facing remediation, imperative voice" },
+          "evidence_ref": {
+            "type": "object",
+            "required": ["artefact_id", "location"],
+            "properties": {
+              "artefact_id": { "type": "string" },
+              "location": { "type": "string" }
+            }
+          },
+          "requestor_ask": {
+            "type": ["object", "null"],
+            "description": "Requestor-view translation. null = assessor-internal finding, suppressed from gap letter. Must be a complete standalone specification: the requestor never sees the rubric.",
+            "properties": {
+              "document": { "type": "string", "description": "Which artefact (or new artefact) the ask attaches to" },
+              "suggested_owner": { "type": "string" },
+              "ask_text": { "type": "string", "description": "Neutral, complete, self-contained requirement. No rubric language, no scores, no slop accusations — specification requests only." },
+              "must_fix": { "type": "boolean", "description": "true = blocks resubmission acceptance; false = recommended" }
+            }
+          }
+        }
+      }
+    },
+    "composite": {
+      "type": "object",
+      "description": "Computed by aggregate.py only",
+      "properties": {
+        "raw_weighted_mean": { "type": "number" },
+        "lowest_gating_score": { "type": "integer" },
+        "cap": { "type": "number", "description": "lowest_gating_score + 1" },
+        "value": { "type": "number", "description": "min(raw_weighted_mean, cap), and for outputs also min(coupling cap)" },
+        "letter": { "enum": ["A", "B", "C", "D", "F"], "description": "Bands: A>=3.5, B 2.5-3.49, C 2.0-2.49, D 1.0-1.99, F<1.0" },
+        "hard_rule_triggered": { "type": "boolean", "description": "Any gating dimension <= 1" }
+      }
+    },
+    "gate": {
+      "type": "object",
+      "description": "Computed by aggregate.py only",
+      "properties": {
+        "decision": { "enum": ["return", "proceed_with_caveats", "proceed", "rework"] },
+        "reasons": { "type": "array", "items": { "type": "string" } },
+        "caveats": {
+          "type": "array",
+          "description": "Inputs mode: logged at proceed_with_caveats; must be carried into the output assessment's limitations section",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "coupling": {
+      "type": "object",
+      "description": "Outputs mode only",
+      "properties": {
+        "input_composite": { "type": "number" },
+        "input_run_ref": { "type": "string", "description": "Reference to the inputs-mode findings object" },
+        "independent_discovery_evidenced": { "type": "boolean", "description": "true only if traceability chain contains assessor-sourced evidence (interview, scan, config inspection)" },
+        "independent_discovery_refs": { "type": "array", "items": { "type": "string" } },
+        "cap": { "type": "number", "description": "input_composite + 1 if evidenced, else input_composite" },
+        "breach": { "type": "boolean", "description": "Computed pre-cap mean exceeded the coupling cap — itself a finding" }
+      }
+    },
+    "patternability": {
+      "type": "object",
+      "description": "Outputs mode only",
+      "properties": {
+        "flag": { "enum": ["pattern_conformant", "pattern_candidate", "bespoke"] },
+        "pattern_ref": { "type": "string", "description": "Required when pattern_conformant" },
+        "applicability_conditions": { "type": "array", "items": { "type": "string" }, "description": "Required when pattern_candidate" },
+        "eligibility_check": {
+          "type": "object",
+          "properties": {
+            "composite_gte_3": { "type": "boolean" },
+            "traceability_gte_3": { "type": "boolean" },
+            "conformity_gte_3": { "type": "boolean" }
+          }
+        }
+      }
+    }
+  }
+}

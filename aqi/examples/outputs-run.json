@@ -1,0 +1,29 @@
+{
+  "aqi_version": "0.1",
+  "mode": "outputs",
+  "subject": {"title": "Payments API ingress assessment", "reference": "ASMT-2026-0119", "date": "2026-06-10",
+    "assessor": "Security team",
+    "artefacts": [{"artefact_id": "R1", "name": "Assessment report", "version": "0.9"}]},
+  "complexity": {"tier": "T3", "max_driver": "trust_boundaries",
+    "drivers": {"change_depth": "T2", "trust_boundaries": "T3", "data_sensitivity": "T3",
+                "integration_surface": "T2", "technology_novelty": "T1", "reversibility": "T2"}},
+  "dimensions": [
+    {"id": "coverage", "gating": true, "in_composite": true, "score": 3,
+     "evidence": [{"artefact_id": "R1", "location": "ss3-7"}]},
+    {"id": "traceability", "gating": true, "in_composite": true, "score": 3,
+     "evidence": [{"artefact_id": "R1", "location": "appendix A trace matrix"}]},
+    {"id": "consistency", "gating": false, "in_composite": true, "score": 4,
+     "evidence": [{"artefact_id": "R1", "location": "throughout"}]},
+    {"id": "conformity", "gating": false, "in_composite": false, "score": 4,
+     "evidence": [{"artefact_id": "R1", "location": "s8", "note": "controls cited to internal catalogue"}]},
+    {"id": "actionability", "gating": false, "in_composite": true, "score": 3,
+     "evidence": [{"artefact_id": "R1", "location": "s8 control table"}]},
+    {"id": "clarity", "gating": false, "in_composite": true, "score": 3,
+     "sub_scores": {"surface_clarity": 3, "specificity": 3},
+     "evidence": [{"artefact_id": "R1", "location": "throughout"}]}
+  ],
+  "findings": [],
+  "coupling": {"independent_discovery_evidenced": true,
+               "independent_discovery_refs": ["R1 appendix B: config inspection of LB and WAF", "R1 s4: interview with network team 2026-06-03"]},
+  "patternability": {"flag": "bespoke"}
+}
