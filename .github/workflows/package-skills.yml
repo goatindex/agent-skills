@@ -1,0 +1,41 @@
+name: Package skills
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Remove previous rolling release and tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete latest --yes --cleanup-tag || true
+
+      - name: Zip each skill folder
+        run: |
+          mkdir -p dist
+          for dir in */; do
+            name="${dir%/}"
+            if [ -f "$name/SKILL.md" ]; then
+              echo "Packaging $name"
+              (cd "$name" && zip -r "../dist/$name.skill" .)
+            fi
+          done
+
+      - name: Publish rolling release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest packaged skills
+          body: Auto-packaged .skill files, rebuilt on every push to master. Not a versioned release — always reflects the current master branch.
+          prerelease: true
+          make_latest: false
+          files: dist/*.skill
