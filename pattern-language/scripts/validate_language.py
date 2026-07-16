@@ -12,7 +12,9 @@ Two delivery shapes are accepted (see references/language-structure.md):
 Standard library only — no third-party imports (portable floor).
 Full check descriptions and severities: references/validation.md
 
-Usage: python3 validate_language.py <language-folder | language-doc.md>
+Usage: python3 validate_language.py [--verbose] <language-folder | language-doc.md>
+       --verbose lists every warning; by default each warning category is
+       capped at 10 lines (real languages can emit hundreds of one type).
 Exit: 0 = pass (warnings allowed), 1 = one or more FAILs, 2 = usage/IO error.
 """
 
@@ -24,6 +26,9 @@ REQUIRED_KEYS = ("number", "name", "confidence", "scale", "links_up", "links_dow
 OPTIONAL_KEYS = frozenset({"status", "date", "sympathies", "tensions"})
 LINK_KEYS = ("links_up", "links_down", "sympathies", "tensions")
 LATERAL_KEYS = ("sympathies", "tensions")
+PATHFINDER_CORE = ("Purpose & audience", "Scope", "The gradient",
+                   "Landscape & key references", "Evidence & provenance")
+WARN_CAP = 10  # per-category display cap unless --verbose
 AST = {0: "", 1: "✻", 2: "✻✻"}  # ✻
 STARS = "✻★"  # ✻ or ★ — both accepted when reading a single-doc header
 
@@ -151,7 +156,7 @@ def check_lateral(patterns, fails, warns, reciprocal):
 # Folder shape — file-per-pattern + index.md                                   #
 # --------------------------------------------------------------------------- #
 
-def validate_folder(folder):
+def validate_folder(folder, verbose=False):
     fails, warns = [], []
     patterns = {}   # number -> {fm, fname, body}
 
@@ -231,6 +236,12 @@ def validate_folder(folder):
         if not fm["links_up"] and not fm["links_down"]:
             warns.append(f"{fname}: orphan — no links in either direction")
 
+        # Rule of three: a ✻✻ rating is earned by documented known uses.
+        if fm["confidence"] == 2 and section(body, "Known uses") is None:
+            warns.append(
+                f"{fname}: confidence ✻✻ but no '## Known uses' section (rule of three)"
+            )
+
         # Reciprocity — emit only from the lower-numbered pattern to avoid duplicate WARNs
         for t in fm["links_down"]:
             if t in nums and t > n and n not in patterns[t]["fm"]["links_up"]:
@@ -269,6 +280,41 @@ def validate_folder(folder):
     }
     check_lateral(lateral, fails, warns, reciprocal=True)
 
+    # PATHFINDER.md — the language's self-description (references/pathfinder.md)
+    pf_path = os.path.join(folder, "PATHFINDER.md")
+    if not os.path.isfile(pf_path):
+        warns.append("PATHFINDER.md missing — no self-description "
+                     "(see references/pathfinder.md)")
+    else:
+        with open(pf_path, encoding="utf-8-sig") as fh:
+            pf_text = fh.read()
+        for h in PATHFINDER_CORE:
+            if not re.search(rf"^##\s+{re.escape(h)}\s*:?\s*$", pf_text, re.M | re.I):
+                warns.append(f"PATHFINDER.md: missing core heading '## {h}'")
+
+    # sequences/ — named sequences are first-class; their links must resolve
+    seq_dir = os.path.join(folder, "sequences")
+    if os.path.isdir(seq_dir):
+        for sf in sorted(os.listdir(seq_dir)):
+            if not sf.endswith(".md"):
+                continue
+            with open(os.path.join(seq_dir, sf), encoding="utf-8-sig") as fh:
+                stext = fh.read()
+            refs = [int(m.group(1)) for m in
+                    re.finditer(r"\]\((?:\.\./)?(\d{3,})-[^)]*\.md\)", stext)]
+            if not refs:
+                warns.append(f"sequences/{sf}: no pattern links found")
+                continue
+            for r in refs:
+                if r not in nums:
+                    fails.append(f"sequences/{sf}: links to pattern {r} "
+                                 f"which does not exist")
+            for a, b in zip(refs, refs[1:]):
+                if b < a:
+                    warns.append(f"sequences/{sf}: step order runs {a} -> {b}, "
+                                 f"against the gradient (largest scale first)")
+                    break
+
     # index.md — count only list-item lines, not prose cross-links
     idx_path = os.path.join(folder, "index.md")
     if not os.path.isfile(idx_path):
@@ -300,7 +346,21 @@ def validate_folder(folder):
                 f"index.md: scale {s!r} used in frontmatter but no matching '## {s}' heading"
             )
 
-    return report(patterns, fails, warns, rung="folder")
+    # Network statistics — edges normalised to (larger, smaller) tuples
+    down_side = {(n, t) for n, p in patterns.items()
+                 for t in p["fm"]["links_down"] if t in nums}
+    up_side = {(t, n) for n, p in patterns.items()
+               for t in p["fm"]["links_up"] if t in nums}
+    edges = down_side | up_side
+    stats = {
+        "confidence": [sum(1 for p in patterns.values()
+                           if p["fm"]["confidence"] == c) for c in (0, 1, 2)],
+        "edges": len(edges),
+        "reciprocity": (len(down_side & up_side) / len(edges)) if edges else None,
+        "orphans": sum(1 for p in patterns.values()
+                       if not p["fm"]["links_up"] and not p["fm"]["links_down"]),
+    }
+    return report(patterns, fails, warns, rung="folder", stats=stats, verbose=verbose)
 
 
 # --------------------------------------------------------------------------- #
@@ -358,7 +418,7 @@ def parse_mermaid(block):
     return down, symp, tension
 
 
-def validate_single_doc(path):
+def validate_single_doc(path, verbose=False):
     fails, warns = [], []
     with open(path, encoding="utf-8-sig") as fh:
         text = fh.read()
@@ -455,17 +515,82 @@ def validate_single_doc(path):
     # Lateral edges are undirected here, so reciprocity is structural.
     check_lateral(patterns, fails, warns, reciprocal=False)
 
-    return report(patterns, fails, warns, rung="single-doc")
+    # Pathfinder appendix — the single-doc equivalent of PATHFINDER.md
+    if not re.search(r"^##\s+Pathfinder\s*:?\s*$", text, re.M | re.I):
+        warns.append(f"{docname}: no '## Pathfinder' section — single-doc "
+                     f"languages carry the pathfinder as an appendix "
+                     f"(see references/pathfinder.md)")
+
+    edges = sum(len(p["links_down"]) for p in patterns.values())
+    stats = {
+        "confidence": [sum(1 for p in patterns.values()
+                           if p["confidence"] == c) for c in (0, 1, 2)],
+        "edges": edges,
+        "reciprocity": None,  # Mermaid edges are single-source; n/a
+        "orphans": sum(1 for p in patterns.values()
+                       if not p["links_up"] and not p["links_down"]
+                       and not p["sympathies"] and not p["tensions"]),
+    }
+    return report(patterns, fails, warns, rung="single-doc", stats=stats,
+                  verbose=verbose)
 
 
 # --------------------------------------------------------------------------- #
 
-def report(patterns, fails, warns, rung):
-    for w in warns:
-        print(f"WARN  {w}")
+def _warn_category(msg):
+    """Bucket a warning message for grouped reporting. Order matters:
+    earlier tests win when a message would match more than one."""
+    checks = (
+        ("orphan", "orphans"),
+        ("does not link_up back", "reciprocity"),
+        ("does not link_down back", "reciprocity"),
+        ("one-sided", "lateral links"),
+        ("scale-order", "scale order"),
+        ("scale order", "scale order"),
+        ("not mentioned in", "prose mentions"),
+        ("Known uses", "known uses"),
+        ("PATHFINDER", "pathfinder"),
+        ("Pathfinder", "pathfinder"),
+        ("sequences/", "sequences"),
+        ("index.md", "index"),
+        ("frontmatter", "frontmatter"),
+        ("mermaid", "graph"),
+    )
+    for needle, cat in checks:
+        if needle in msg:
+            return cat
+    return "other"
+
+
+def report(patterns, fails, warns, rung, stats=None, verbose=False):
+    # FAILs first (blockers up top), then WARNs grouped by category and
+    # capped — a real language can emit hundreds of one warning type
+    # (APL 1977 yields 693 reciprocity warns), which ungrouped would bury
+    # every other finding.
     for f in fails:
         print(f"FAIL  {f}")
+    groups = {}
+    for w in warns:
+        groups.setdefault(_warn_category(w), []).append(w)
+    for cat, msgs in groups.items():
+        print(f"WARN  {cat}: {len(msgs)}")
+        shown = msgs if verbose else msgs[:WARN_CAP]
+        for m in shown:
+            print(f"      {m}")
+        if len(msgs) > len(shown):
+            print(f"      … {len(msgs) - len(shown)} more (--verbose lists all)")
+
     total = len(patterns)
+    if stats and total:
+        c0, c1, c2 = stats["confidence"]
+        parts = [f"{total} patterns (✻✻ {c2} / ✻ {c1} / — {c0})",
+                 f"{stats['edges']} edges",
+                 f"{2 * stats['edges'] / total:.1f} links/pattern"]
+        if stats["reciprocity"] is not None:
+            parts.append(f"{stats['reciprocity']:.0%} reciprocal")
+        parts.append(f"{stats['orphans']} orphan{'s' if stats['orphans'] != 1 else ''}")
+        print(f"\nNetwork: " + "; ".join(parts))
+
     status = "PASS" if not fails else "FAIL"
     print(f"\n{total} pattern{'s' if total != 1 else ''} checked ({rung} shape): "
           f"{status} ({len(fails)} fail{'s' if len(fails)!=1 else ''}, "
@@ -474,14 +599,21 @@ def report(patterns, fails, warns, rung):
 
 
 def main():
-    if len(sys.argv) != 2:
+    # Windows pipes default to a legacy codepage that cannot encode ✻;
+    # degrade characters rather than crash.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(errors="replace")
+    args = sys.argv[1:]
+    verbose = "--verbose" in args
+    args = [a for a in args if a != "--verbose"]
+    if len(args) != 1:
         print(__doc__)
         return 2
-    target = sys.argv[1]
+    target = args[0]
     if os.path.isdir(target):
-        return validate_folder(target)
+        return validate_folder(target, verbose=verbose)
     if os.path.isfile(target) and target.endswith(".md"):
-        return validate_single_doc(target)
+        return validate_single_doc(target, verbose=verbose)
     print(__doc__)
     return 2
 

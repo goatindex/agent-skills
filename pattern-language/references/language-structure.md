@@ -13,24 +13,29 @@ Pick by host and size, not by decree. Do not hand-maintain both shapes for the s
 
 ```
 <language-name>/
+  PATHFINDER.md                 # the language's self-description — see references/pathfinder.md
   index.md                      # the ordered sequence — canonical
   001-<name>.md                 # one file per pattern
   002-<name>.md
   …
-  README.md                     # optional: provenance, audience, how to use
+  sequences/                    # optional: named sequences through the language
+    <sequence-name>.md
 ```
 
-No subfolders for patterns — scale grouping lives in `index.md` and in each pattern's `scale:` key, not in the directory tree. This keeps relative links between patterns trivial and the folder portable.
+No subfolders for patterns — scale grouping lives in `index.md` and in each pattern's `scale:` key, not in the directory tree. This keeps relative links between patterns trivial and the folder portable. (`PATHFINDER.md` supersedes the old optional `README.md`; upgrade an existing README in place.)
 
-## Scale ordering
+## The gradient
 
-Patterns run from the **largest scale to the smallest**. In APL that was towns → buildings → construction. In any other domain, identify the equivalent gradient first; examples:
+Patterns run from the **largest to the smallest** — but "large" and "small" need not mean physical size. The requirement is a **monotone design gradient**: one consistent axis of descent that the designer walks from whole toward part. Valid axes include:
 
-- Organising: federation → branch → committee → meeting → conversation
-- Game campaign: setting → arc → session → scene → mechanic
-- Software process: organisation → team → release → change → commit
+- Spatial/structural scale (APL: towns → buildings → construction)
+- Organisational scope (software process: organisation → team → release → change → commit)
+- Process/time order (facilitation: intention → context → relationship → flow → closing)
+- Campaign structure (game design: setting → arc → session → scene → mechanic)
 
-Number patterns so that scale bands occupy contiguous ranges, and **leave gaps between bands** (e.g. band one starts at 1, band two at 20, band three at 40) so the language can grow without renumbering. Gaps in numbering are normal and healthy; duplicate numbers are fatal.
+What matters is that the axis is *declared* (in `PATHFINDER.md` § The gradient) and *consistent* — every band sits unambiguously before or after every other band on the named axis, and a reader entering at the top descends. Thematic **categories with no ordering rationale are not a gradient** (that is the smell qualitative check 6 looks for); ordered categories along a declared axis are fine, as Group Works' event-design ordering shows.
+
+Number patterns so that bands occupy contiguous ranges, and **leave gaps between bands** (e.g. band one starts at 1, band two at 20, band three at 40) so the language can grow without renumbering. Gaps in numbering are normal and healthy; duplicate numbers are fatal.
 
 ## index.md format
 
@@ -55,9 +60,20 @@ What you are doing at this scale, as an instruction.
 
 Every pattern file appears in exactly one list-item line (`N. [Name](file.md)`) in the index, in number order, with its confidence asterisks shown. Prose cross-links within group blurbs are fine and don't count. The group heading text must match the `scale:` values used in frontmatter.
 
+**Clusters (optional, for larger languages).** Within a `## Scale Group`, patterns may be gathered into `### Cluster` sub-headings of roughly 4–10 patterns, each with its own one-sentence connective instruction. This is APL's own index structure — three tiers containing ~36 thematic clusters, each introduced by an imperative ("Within each region work toward…") — and it is where the language's generative voice lives at scale. The validator ignores `###` headings (only `##` headings must match `scale:` values), so clusters are free to add when a group grows past ten patterns.
+
 ## Sequences
 
-A reader never uses the whole language at once: they pick a **sequence** — a path through the network for one project, choosing the patterns that apply and compressing them into a single design. When a user asks "apply this language to X", the deliverable is a sequence: an ordered subset (largest scale first) with one line each on how the pattern lands in X. Sequences are documents *about* a language; store them outside the language folder or in a `sequences/` sibling.
+A reader never uses the whole language at once: they pick a **sequence** — a path through the network for one project, choosing the patterns that apply and compressing them into a single design. When a user asks "apply this language to X", the deliverable is a sequence.
+
+A sequence is **not a bare ordered list**. The strongest published exemplars (e.g. scrumbook.org's *A Scaling Sequence*) carry four elements, and so does ours:
+
+1. **Purpose line** — what walking this sequence produces, for whom.
+2. **Entry conditions** — what must already be true before step one ("the starting point is always a single working X"); a sequence entered too early produces cargo cult, not design.
+3. **The ordered steps** — largest scale first, each a list item `N. [Pattern Name](../NNN-file.md) — one line on how the pattern lands in this context`, with connective narrative between steps where the hand-off needs explaining.
+4. **Cautions** — the known failure modes of running the sequence wrong (skipping a step, entering mid-way, scaling a dysfunction).
+
+Named, reusable sequences are **first-class members of the language**: store them in `sequences/<name>.md` inside the language folder and list them in `PATHFINDER.md` § Sequences. The validator checks that every pattern a sequence links to exists (FAIL) and that steps run down the gradient (WARN). One-off project applications ("apply this to my team") may live outside the language as ordinary documents; promote one to `sequences/` when it proves reusable.
 
 ## Restructuring operations
 

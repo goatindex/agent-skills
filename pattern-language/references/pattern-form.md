@@ -52,7 +52,20 @@ within a week of the decision. Make writing it part of the deciding, not an
 extra job afterwards.**
 
 An optional paragraph or simple diagram (described in words or as a small
-Mermaid block) showing the solution's shape.
+Mermaid block) showing the solution's shape, and/or a **resulting context**
+paragraph: what the world looks like once the pattern is applied, and which
+tensions it newly exposes.
+
+## Known uses
+
+- The 2024 restructure working group — trail kept in the wiki, cited in the
+  2025 AGM as why the merger held.
+- (One list item per real, independent instance; one to three is healthy.)
+
+## Cautions
+
+Optional: the known ways this pattern is misapplied — the record becoming a
+compliance artifact nobody reads; retro-writing the trail weeks later.
 
 ## Links down
 
@@ -67,8 +80,10 @@ to make sure it is read, anchor it in [Member Briefing Rhythm (18)](018-member-b
 3. **Problem statement**: the first element under `## Problem` is a **single bolded statement** of the tension. The test: does it name forces in conflict? "There is no X" fails the test. "People need A, but circumstance B makes A costly" passes.
 4. **Body**: evidence and reasoning in plain prose. Length proportional to confidence — a ✻✻ pattern earns its rating with substantial evidence; a 0-asterisk pattern can be a paragraph of honest hypothesis.
 5. **Therefore**: the first element under `## Therefore` is a **single bolded instruction**. Imperative voice. It must be performable ("publish a short standing record…") and under-specified on purpose ("in the same place every time" — but it does not say which place). If you cannot act on it tomorrow, it is too vague; if two teams following it would produce identical artifacts, it is too specific.
-6. **Links down** (closing prose): a paragraph beginning conventionally with an ellipsis, linking to the smaller patterns that complete this one. Every number in `links_down` appears here.
-7. **A pattern with empty `links_up` AND empty `links_down` is an orphan** — only acceptable transiently mid-edit; the validator warns.
+6. **Known uses** (optional section, after Therefore): one list item per real, independent instance of the pattern working — the PLoP tradition's evidence slot. This is where confidence is *earned*: the validator warns on a ✻✻ pattern with no Known uses section.
+7. **Cautions** (optional section): the known misapplications and failure modes, stated plainly. Both scrumbook.org ("scaling before high performance scales your dysfunctions") and Group Works ("Cautions & Caveats") carry this slot; a mature pattern knows how it goes wrong.
+8. **Links down** (closing prose, always the final section): a paragraph beginning conventionally with an ellipsis, linking to the smaller patterns that complete this one. Every number in `links_down` appears here.
+9. **A pattern with empty `links_up` AND empty `links_down` is an orphan** — only acceptable transiently mid-edit; the validator warns.
 
 ## Naming patterns
 
@@ -76,8 +91,10 @@ Names carry the language. Prefer concrete, slightly evocative noun phrases that 
 
 ## Confidence calibration
 
-- `0` (no asterisk) — a hypothesis worth recording. You believe it; you have not tested it.
-- `1` (✻) — real progress on the problem; tested somewhere, but better formulations surely exist.
-- `2` (✻✻) — you would be surprised to see a living solution to this problem that does not contain this pattern in some form. Rare. Demands evidence in the body.
+Calibrate against **known uses** (the pattern community's "rule of three": one instance is an event, two a coincidence, three a pattern):
+
+- `0` (no asterisk) — a hypothesis worth recording. You believe it; you have not tested it. No known uses required.
+- `1` (✻) — real progress on the problem; at least **one** known use, but better formulations surely exist.
+- `2` (✻✻) — you would be surprised to see a living solution to this problem that does not contain this pattern in some form. Rare. Demands roughly **three independent known uses** documented in the `## Known uses` section, plus evidence in the body.
 
 When updating an existing pattern, revisit its confidence: ratings should move with evidence, in both directions.

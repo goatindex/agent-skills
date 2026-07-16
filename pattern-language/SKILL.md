@@ -1,11 +1,11 @@
 ---
 name: pattern-language
-description: Create, update, expand, or validate a pattern language in the style of Christopher Alexander — for any domain, not just architecture. Use whenever the user mentions a pattern language, Alexandrian patterns, generative patterns, "turning what works into patterns", codifying recurring solutions to recurring problems, or building a cross-linked library of named practices (organising, governance, game design, teaching, software process, anything). Also use for critique or structural integrity checks of an existing language. Do NOT use for UI component libraries, Gang-of-Four coding questions, persuasion proposals (toc-proposal), or PA letterhead docs (pa-document).
+description: Create, update, expand, apply, or validate a pattern language in the style of Christopher Alexander — for any domain, not just architecture. Use whenever the user mentions a pattern language, Alexandrian patterns, generative patterns, "turning what works into patterns", codifying recurring solutions to recurring problems, or building a cross-linked library of named practices (organising, governance, game design, teaching, software process, anything). Also use for critique or structural integrity checks of an existing language, and for applying a language to a concrete project (producing a sequence). Do NOT use for UI component libraries, Gang-of-Four coding questions, persuasion proposals (toc-proposal), or PA letterhead docs (pa-document).
 ---
 
 # Pattern Language
 
-Create, grow, and validate pattern languages in the Alexandrian tradition, agnostic of domain. A pattern language is not a list of tips: it is an **ordered network** of named patterns, largest scale to smallest, where each pattern resolves a recurring tension and connects upward to the patterns it completes and downward to the patterns that complete it.
+Create, grow, apply, and validate pattern languages in the Alexandrian tradition, agnostic of domain. A pattern language is not a list of tips: it is an **ordered network** of named patterns, descending a declared gradient from largest to smallest, where each pattern resolves a recurring tension and connects upward to the patterns it completes and downward to the patterns that complete it.
 
 ## Operations
 
@@ -16,16 +16,19 @@ Determine which operation the user wants, then follow the matching workflow. Rea
 | **Create** | New language from scratch | `references/intake.md`, then `references/language-structure.md` |
 | **Add / update** | New pattern(s) into an existing language, or revise one | `references/pattern-form.md` |
 | **Expand / restructure** | New scale levels, re-sequencing, splitting/merging patterns | `references/language-structure.md` |
+| **Apply** | Use the language on a concrete project — the deliverable is a **sequence** | `references/language-structure.md` (§ Sequences) |
 | **Validate / critique** | Integrity check or qualitative review | `references/validation.md` |
 
-Read `references/pattern-form.md` before writing or editing any pattern body — it defines the canonical anatomy and file format. For all other routing, the table above governs. `references/apl-exemplar.md` holds the factual index of Alexander's original 253 patterns and his conventions — consult it when the user wants fidelity to the original or an example of scale grouping.
+Read `references/pattern-form.md` before writing or editing any pattern body — it defines the canonical anatomy and file format. For Add / Expand / Apply on an existing language, read its `PATHFINDER.md` first — it is the language's own statement of scope, gradient, and grounding (`references/pathfinder.md` defines it). For all other routing, the table above governs. `references/apl-exemplar.md` holds the factual index of Alexander's original 253 patterns and his conventions — consult it when the user wants fidelity to the original or an example of scale grouping.
 
 ## The artifact
 
 A pattern language comes in one of **two delivery shapes**, both first-class and both validatable (see `references/language-structure.md`):
 
-- **Folder** (default) — one markdown file per pattern plus an `index.md` carrying the ordered sequence with connective prose. Links live in typed frontmatter, so every structural check runs at full strength. Best for larger languages, languages grown over time, and Obsidian/apl-md workflows.
-- **Single network-doc** — the whole language in one `.md` with an embedded `mermaid graph TD` block (the canonical link source), a generative sequence, and appendices. Best for small-to-medium languages hosted on a wiki page.
+- **Folder** (default) — one markdown file per pattern plus an `index.md` carrying the ordered sequence with connective prose, a `PATHFINDER.md` self-description, and optionally `sequences/` for named sequences. Links live in typed frontmatter, so every structural check runs at full strength. Best for larger languages, languages grown over time, and Obsidian/apl-md workflows.
+- **Single network-doc** — the whole language in one `.md` with an embedded `mermaid graph TD` block (the canonical link source), a generative sequence, and appendices including a `## Pathfinder` section. Best for small-to-medium languages hosted on a wiki page.
+
+Either way, the language carries a **pathfinder** (`references/pathfinder.md`): purpose, scope, declared gradient, landscape and key references, evidence base, and growth queue. It is written at create time from the intake answers and re-read before any later operation — it is what keeps growth grounded and scoped.
 
 Choose by host and size, not by decree; when unsure, default to the folder (it loses no checks). Do not hand-maintain both shapes for one language — keep one canonical and generate the other.
 
@@ -36,15 +39,18 @@ These are the things that make output Alexandrian rather than a tip list. The fu
 1. **A pattern is a resolution of forces.** The problem statement must name a genuine tension (two or more forces pulling against each other), not a mere absence ("there is no onboarding doc" is not a problem statement; the tension between X and Y that the missing thing would resolve is).
 2. **The solution is an instruction.** It begins in effect with "Therefore:" and tells the reader what to *do* — specific enough to act on, general enough to be done a thousand different ways without ever being the same twice.
 3. **Every pattern is embedded.** Context prose at the top links up to larger patterns it helps complete; closing prose links down to smaller patterns that complete it. A pattern with no links is not yet in the language.
-4. **Confidence is rated honestly.** Two asterisks (✻✻) = invariant, deeply believed; one (✻) = real progress, will improve; none = a plausible hypothesis. Default new patterns to zero or one asterisk; two must be earned by evidence.
-5. **Scale ordering.** Lower numbers = larger scale. Links up point to lower numbers, links down to higher numbers. The reader should be able to enter at any pattern and walk the network. Beyond the hierarchy, record **lateral links** where they are load-bearing — *sympathies* (patterns that reinforce each other) and *tensions* (patterns whose forces conflict, which a designer must resolve knowingly). Both are mutual and optional; see `references/pattern-form.md`.
+4. **Confidence is rated honestly.** Two asterisks (✻✻) = invariant, deeply believed; one (✻) = real progress, will improve; none = a plausible hypothesis. Default new patterns to zero or one asterisk; two must be earned by evidence — the rule of three: roughly three independent **known uses**, documented in the pattern (see `references/pattern-form.md`).
+5. **Gradient ordering.** Every language descends one declared, monotone axis — spatial scale, organisational scope, or process order (see `references/language-structure.md` § The gradient). Lower numbers = larger/earlier on the axis. Links up point to lower numbers, links down to higher numbers. The reader should be able to enter at any pattern and walk the network. Beyond the hierarchy, record **lateral links** where they are load-bearing — *sympathies* (patterns that reinforce each other) and *tensions* (patterns whose forces conflict, which a designer must resolve knowingly). Both are mutual and optional; see `references/pattern-form.md`.
 6. **Empirical voice.** The body argues from observation and evidence, in plain language, and admits uncertainty. No marketing tone.
+7. **The language knows itself.** Every language carries a pathfinder stating its purpose, scope, gradient, landscape, and evidence base. Work that contradicts the pathfinder is either wrong or a deliberate re-scoping — never silent drift.
 
 ## Workflow notes
 
-**Create**: run the intake in `references/intake.md` (domain, purpose, scales, seed problems), propose the scale structure and a seed pattern list for the user's approval *before* writing pattern bodies, then write patterns largest-scale first. Start small — 5 to 15 patterns is a healthy seed language; the form invites piecemeal growth.
+**Create**: run the intake in `references/intake.md` (domain, purpose, gradient, seed problems, landscape), propose the scale structure and a seed pattern list for the user's approval *before* writing pattern bodies, then write `PATHFINDER.md` from the intake answers, then patterns largest-scale first. Start small — 5 to 15 patterns is a healthy seed language; the form invites piecemeal growth.
 
-**Add / update**: read the existing `index.md` and the patterns adjacent in scale before drafting, so links and numbering land correctly. New patterns take the next free number within their scale band where possible; renumbering existing patterns is a restructure, not an add.
+**Add / update**: read `PATHFINDER.md`, the existing `index.md`, and the patterns adjacent in scale before drafting, so scope, links and numbering land correctly. A candidate outside the pathfinder's scope is parked in its Growth queue, not shoehorned in. New patterns take the next free number within their scale band where possible; renumbering existing patterns is a restructure, not an add.
+
+**Apply**: the deliverable is a **sequence** — an ordered walk through the applicable subset, largest scale first, with a purpose line, entry conditions, one line per step on how the pattern lands in the project, and cautions (`references/language-structure.md` § Sequences). Reusable sequences are saved to `sequences/` and listed in the pathfinder; one-off applications may stay outside the language.
 
 **Validate**: prefer the script (below); fall back to the manual checklist in `references/validation.md`. Always finish a validation with a qualitative pass — the script checks structure, not whether problems are real tensions or solutions are actionable.
 
@@ -55,10 +61,10 @@ These are the things that make output Alexandrian rather than a tip list. The fu
 `scripts/validate_language.py` — Python, **standard library only**. It auto-detects the delivery shape from the path. Run as:
 
 ```
-python3 scripts/validate_language.py <language-folder | language-doc.md>
+python3 scripts/validate_language.py [--verbose] <language-folder | language-doc.md>
 ```
 
-Full check list and severities: `references/validation.md` (single source). Folder summary: frontmatter integrity; unique numbers; link targets exist; header/frontmatter agreement; bolded Problem/Therefore statements; lateral-link (sympathy/tension) targets exist and are mutual; index list-item coverage (prose cross-links in the index are ignored — only list items count). Single-doc summary: headers give identity/scale/confidence, the `mermaid` block gives every relation, and the checked subset is the link/orphan/problem-therefore set (frontmatter and index checks do not apply). Exits non-zero on any FAIL; WARNs (scale ordering, reciprocity, orphans, prose mentions) are reported but do not block.
+Full check list and severities: `references/validation.md` (single source). Folder summary: frontmatter integrity; unique numbers; link targets exist; header/frontmatter agreement; bolded Problem/Therefore statements; lateral-link (sympathy/tension) targets exist and are mutual; index list-item coverage (prose cross-links in the index are ignored — only list items count); pathfinder presence and core headings; ✻✻ patterns carry Known uses; sequence links resolve. Single-doc summary: headers give identity/scale/confidence, the `mermaid` block gives every relation, and the checked subset is the link/orphan/problem-therefore/pathfinder set (frontmatter and index checks do not apply). Exits non-zero on any FAIL. WARNs do not block; they print grouped by category, capped at 10 per category (`--verbose` lifts the cap), followed by a network-statistics line (edges, links/pattern, reciprocity, orphans) interpreted against the benchmarks in `references/validation.md`.
 
 ## Graceful Degradation Ladder
 
@@ -80,5 +86,6 @@ Alexander's book is copyrighted. This skill encodes the *method and form*, and `
 When an operation completes: summarise what changed (patterns added/edited, validation result, rung used), present the folder or files, and drop pattern-body working text from the conversation — the files are canonical.
 
 ---
+*v0.5 (July 2026) — exemplar-grounded update from a comparative read of scrumbook.org (A Scrum Book), apl-md (the full 253-pattern corpus run through this validator: 0 FAILs, 693 reciprocity warns, ~29% of edges mutual, ~14 links/pattern), and Group Works. New: the **pathfinder** (`references/pathfinder.md`, `PATHFINDER.md` / `## Pathfinder` — purpose, scope, declared gradient, landscape, evidence, growth queue; supersedes the optional README); the **Apply** operation with sequences as first-class artifacts (purpose, entry conditions, steps, cautions; validated links); optional **Known uses** (rule of three, tied to ✻✻) and **Cautions** pattern sections; **gradient** doctrine generalised beyond spatial scale to any declared monotone axis; optional `###` clusters in the index (APL's own two-level structure); validator reporting grouped by category with per-category cap, `--verbose`, and a network-statistics line.*
 *v0.4 (June 2026) — drawn from the Engine 52 worked language. Two delivery shapes are now first-class: the file-per-pattern folder (default) and a single wiki-doc whose embedded `mermaid graph TD` block is the canonical link source. The validator auto-detects shape from its path and gained a single-doc mode (header/scale/confidence + Mermaid relations + problem/therefore presence) and BOM-tolerant reads. Lateral links — `sympathies:` / `tensions:` (mutual; rendered `-.-` and `x--x`) — are now part of the schema and checked in both shapes. Folder checks from v0.3 are unchanged.*
 *v0.3 (June 2026) — validator: `#`-in-name check moved to correct field; reciprocity WARNs halved (one per broken pair); context split uses regex matching `section()` so `## Problem:` is handled correctly; unknown frontmatter keys emit WARN (catches typos); misleading `prose_mentions` comment removed. Docs: `language-structure.md` index rule aligned with `validation.md`; reporting-format example updated to match script output. Cluster: complements skill-architecture/skill-creator; no dependencies on other skills.*

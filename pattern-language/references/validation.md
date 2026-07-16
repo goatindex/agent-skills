@@ -20,6 +20,9 @@ FAIL items block; WARN items are reported but don't block. The script docstring 
 - [ ] `index.md` group headings match the `scale:` values used in frontmatter. (WARN)
 - [ ] Pattern `name` does not contain `#` (breaks inline-comment stripping in the parser). (FAIL)
 - [ ] Lateral links: every `sympathies` / `tensions` target exists and is not self-referential. (FAIL on missing/self; WARN — emitted once — when a relation is one-sided, since both are mutual.)
+- [ ] `PATHFINDER.md` exists and carries the five core headings (Purpose & audience, Scope, The gradient, Landscape & key references, Evidence & provenance — see `references/pathfinder.md`). (WARN on missing file or heading)
+- [ ] A ✻✻ (confidence 2) pattern has a `## Known uses` section. (WARN — rule of three)
+- [ ] `sequences/*.md`: every pattern link resolves to an existing pattern (FAIL); step numbers run down the gradient, i.e. ascending (WARN, reported once per sequence); a sequence file with no pattern links at all (WARN).
 
 *Note: two spec rules are not yet enforced by the script — treat them as manual checks:*
 - *Index list items are in ascending number order within each group.*
@@ -27,7 +30,7 @@ FAIL items block; WARN items are reported but don't block. The script docstring 
 
 ### Single-doc shape — the checked subset
 
-When the argument is a single `.md` file, the script reads identity/scale/confidence from `## N. Name ✻` and `# SCALE …` headers and reads **all relations from the embedded `mermaid graph TD` block** (edge grammar in `language-structure.md`). It checks: unique pattern numbers (FAIL on duplicates); every graph edge points at a real pattern (FAIL); each pattern carries a bolded problem statement and a bolded `Therefore:` instruction (FAIL); links_down run largest-to-smallest by number (WARN on reversal); a pattern absent from the graph is an orphan (WARN); sympathy/tension targets exist (FAIL). It does **not** check frontmatter integrity, header/frontmatter agreement, or `index.md` coverage — those are folder-shape concerns. If the doc has no `mermaid` block the link network is unchecked (WARN); convert to the folder shape for a full structural pass.
+When the argument is a single `.md` file, the script reads identity/scale/confidence from `## N. Name ✻` and `# SCALE …` headers and reads **all relations from the embedded `mermaid graph TD` block** (edge grammar in `language-structure.md`). It checks: unique pattern numbers (FAIL on duplicates); every graph edge points at a real pattern (FAIL); each pattern carries a bolded problem statement and a bolded `Therefore:` instruction (FAIL); links_down run largest-to-smallest by number (WARN on reversal); a pattern absent from the graph is an orphan (WARN); sympathy/tension targets exist (FAIL); a `## Pathfinder` appendix section is present (WARN if absent). It does **not** check frontmatter integrity, header/frontmatter agreement, or `index.md` coverage — those are folder-shape concerns. If the doc has no `mermaid` block the link network is unchecked (WARN); convert to the folder shape for a full structural pass.
 
 ## Qualitative critique
 
@@ -43,20 +46,37 @@ Apply per pattern, then to the whole. Report findings ranked by severity, with t
 
 **Whole language**
 
-6. **Gradient coherence.** Do the scale groups form a real largest-to-smallest gradient, or are they just categories? Categories are a smell — the reader should descend.
-7. **Connectivity.** Is the network connected? Clusters with no links between them may be two languages.
-8. **Coverage honesty.** Are there obvious load-bearing tensions in the domain with no pattern? List them as candidate patterns rather than padding the language.
+6. **Gradient coherence.** Do the scale groups descend a real, declared, monotone axis (spatial scale, scope, process order — see `language-structure.md` § The gradient), or are they unordered categories? Categories with no ordering rationale are the smell — the reader should descend. Check the groups against the axis declared in `PATHFINDER.md` § The gradient.
+7. **Connectivity.** Is the network connected? Clusters with no links between them may be two languages. Density benchmark: APL averages ~14 links per pattern (1,758 edges over 253 patterns); a language averaging under ~2 is under-woven — its patterns are filed, not embedded. (On reciprocity: APL's own network is only ~29% mutually asserted, but that is a defect of hand-maintained prose links, not a target — typed frontmatter makes full reciprocity cheap, so hold new languages to it.)
+8. **Coverage honesty.** Are there obvious load-bearing tensions in the domain with no pattern? List them in the pathfinder's Growth queue rather than padding the language.
 9. **Voice consistency.** Empirical, plain, no marketing. Flag patterns that read like policy or advertising.
+10. **Pathfinder fidelity.** Does the language still match its own `PATHFINDER.md` — scope, gradient, stated evidence base? Scope drift and undeclared gradient changes are HIGH findings; a stale Growth queue or Change log is MED.
 
 ## Reporting format
+
+The script prints FAILs first (blockers up top), then WARNs **grouped by category** with each category capped at 10 lines (`--verbose` lifts the cap — real languages can produce hundreds of same-type warnings; APL yields 693 reciprocity warns, which ungrouped would bury everything else), then a network-statistics line, then the summary:
+
+```
+FAIL  012-standing-mandate.md: links_down target 19 does not exist
+WARN  reciprocity: 27
+      007-open-floor.md: links_down to 015-one-page-minutes.md, but that pattern does not link_up back
+      …
+      … 17 more (--verbose lists all)
+WARN  prose mentions: 2
+      007-open-floor.md: links_up target 3 not mentioned in context prose
+      …
+
+Network: 24 patterns (✻✻ 3 / ✻ 12 / — 9); 61 edges; 5.1 links/pattern; 84% reciprocal; 0 orphans
+
+24 patterns checked (folder shape): FAIL (1 fail, 29 warns)
+```
+
+Interpret the statistics against the benchmarks in qualitative check 7. When validating manually, mirror this shape and mark the rung:
 
 ```
 VALIDATION — <language name>
 Structural: PASS | FAIL (n fails, m warns) — rung used: script | manual checklist
-  FAIL  012-standing-mandate.md: links_down target 19 does not exist
-  WARN  007-open-floor.md: links_up target 3 not mentioned in context prose
-  WARN  007-open-floor.md: links_down to 015-one-page-minutes.md, but that pattern does not link_up back
 Qualitative:
   HIGH  004-member-ask.md: problem statement is an absence, not a tension — suggest: "<rewrite>"
-  MED   index group 'Practices' is a category, not a scale — consider splitting into …
+  MED   index group 'Practices' is unordered — declare its position on the gradient or split it
 ```
