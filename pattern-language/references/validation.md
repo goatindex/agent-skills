@@ -13,8 +13,8 @@ FAIL items block; WARN items are reported but don't block. The script docstring 
 - [ ] Header line `# N. Name` matches frontmatter number and name; asterisks match confidence. (FAIL)
 - [ ] `## Problem` and `## Therefore` sections present (headings tolerate an optional colon); first element of each is a bolded statement. (FAIL — error message shows headings found nearby)
 - [ ] `links_up` point to lower numbers, `links_down` to higher. (WARN — legitimate exceptions exist mid-restructure)
-- [ ] Reciprocity: A lists B in `links_down` ⇔ B lists A in `links_up`. (WARN — emitted once per broken pair, from the lower-numbered pattern)
-- [ ] No orphans (empty `links_up` and `links_down`). (WARN)
+- [ ] Reciprocity: A lists B in `links_down` ⇔ B lists A in `links_up`. (WARN — one per one-way edge, emitted from the asserting side; a one-way edge has exactly one asserter, so pairs are never double-reported)
+- [ ] No orphans (empty `links_up` and `links_down`). (WARN — orphanhood is judged on a pattern's *own* frontmatter; a pattern other patterns point at but which declares nothing itself still warns, deliberately: declarations are the pattern's responsibility)
 - [ ] Context prose mentions every `links_up` target; Links-down prose mentions every `links_down` target. (WARN — uses anchored filename-or-`(N)` match, not bare substring)
 - [ ] `index.md` exists; every pattern appears in exactly one **list-item line** (`N. [Name](file.md)`); prose cross-links in the index are not counted. (FAIL on missing/duplicated list entries)
 - [ ] `index.md` group headings match the `scale:` values used in frontmatter. (WARN)
@@ -52,9 +52,23 @@ Apply per pattern, then to the whole. Report findings ranked by severity, with t
 9. **Voice consistency.** Empirical, plain, no marketing. Flag patterns that read like policy or advertising.
 10. **Pathfinder fidelity.** Does the language still match its own `PATHFINDER.md` — scope, gradient, stated evidence base? Scope drift and undeclared gradient changes are HIGH findings; a stale Growth queue or Change log is MED.
 
+## Writers' workshop (peer-critique protocol)
+
+The pattern community's quality mechanism is not solo review but the **writers' workshop** (Richard Gabriel's format, used by every PLoP conference): a structured reading in which the author stays silent while readers work through the pattern. Run it on request, or offer it for any pattern being promoted to ✻ or ✻✻ — it catches what the structural and solo-qualitative passes cannot: whether the pattern *communicates*.
+
+Protocol, per pattern (adapted for one reviewer; with several humans, let each speak in turn):
+
+1. **Author is silent** until step 5. If reviewing in-conversation, treat the pattern file as the author's whole statement — no clarifications sought.
+2. **Read back**: summarise the pattern in your own words — the tension, the instruction, who it is for. If the summary is hard to produce, that is itself the primary finding.
+3. **What works**: name the strongest elements first (the name, the forces argument, a known use) and *why* they work. Not a courtesy — it tells the author what to protect while revising.
+4. **Suggestions for improvement**: findings in severity order, each tied to a specific quality test (forces, actionability, evidence proportionality, name, single resolution) with a concrete rewrite offered. Format each as a labelled review comment (e.g. Conventional Comments: `issue (blocking):`, `suggestion:`, `praise:`) so intent and severity are explicit.
+5. **Author responds** — questions of clarification only, then decides; the workshop advises, the author owns the pattern.
+
+Workshop findings feed the same report as the qualitative pass. A pattern that has been workshopped and revised is a reasonable candidate for `status: reviewed`.
+
 ## Reporting format
 
-The script prints FAILs first (blockers up top), then WARNs **grouped by category** with each category capped at 10 lines (`--verbose` lifts the cap — real languages can produce hundreds of same-type warnings; APL yields 693 reciprocity warns, which ungrouped would bury everything else), then a network-statistics line, then the summary:
+The script prints FAILs first (blockers up top), then WARNs **grouped by category** with each category capped at 10 lines (`--verbose` lifts the cap — real languages can produce hundreds of same-type warnings; APL yields 1,251 reciprocity warns, which ungrouped would bury everything else), then a network-statistics line, then the summary:
 
 ```
 FAIL  012-standing-mandate.md: links_down target 19 does not exist

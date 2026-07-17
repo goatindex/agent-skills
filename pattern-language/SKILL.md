@@ -14,6 +14,7 @@ Determine which operation the user wants, then follow the matching workflow. Rea
 | Operation | When | Read first |
 |---|---|---|
 | **Create** | New language from scratch | `references/intake.md`, then `references/language-structure.md` |
+| **Mine** | Extract candidate patterns from real material (retros, decision logs, literature) — at create time or as a re-entrant pass before Add/Expand | `references/mining.md` |
 | **Add / update** | New pattern(s) into an existing language, or revise one | `references/pattern-form.md` |
 | **Expand / restructure** | New scale levels, re-sequencing, splitting/merging patterns | `references/language-structure.md` |
 | **Apply** | Use the language on a concrete project — the deliverable is a **sequence** | `references/language-structure.md` (§ Sequences) |
@@ -46,7 +47,9 @@ These are the things that make output Alexandrian rather than a tip list. The fu
 
 ## Workflow notes
 
-**Create**: run the intake in `references/intake.md` (domain, purpose, gradient, seed problems, landscape), propose the scale structure and a seed pattern list for the user's approval *before* writing pattern bodies, then write `PATHFINDER.md` from the intake answers, then patterns largest-scale first. Start small — 5 to 15 patterns is a healthy seed language; the form invites piecemeal growth.
+**Create**: run the intake in `references/intake.md` (domain, purpose, gradient, seed problems, landscape); when material exists to mine, run the mining pipeline (`references/mining.md`) so seed problems arrive harvested rather than brainstormed. Propose the scale structure and a seed pattern list for the user's approval *before* writing pattern bodies, then write `PATHFINDER.md` from the intake answers, then patterns largest-scale first. Start small — 5 to 15 patterns is a healthy seed language; the form invites piecemeal growth.
+
+**Mine**: follow the pipeline in `references/mining.md` — harvest fragments, cluster by tension, forces-test, name, route to seed table or Growth queue, and write provenance (including null results and resumption markers) back to the pathfinder. Mining recurs: any Add/Expand on a language with accumulated new material starts with an incremental pass from the pathfinder's last resumption marker.
 
 **Add / update**: read `PATHFINDER.md`, the existing `index.md`, and the patterns adjacent in scale before drafting, so scope, links and numbering land correctly. A candidate outside the pathfinder's scope is parked in its Growth queue, not shoehorned in. New patterns take the next free number within their scale band where possible; renumbering existing patterns is a restructure, not an add.
 
@@ -55,6 +58,26 @@ These are the things that make output Alexandrian rather than a tip list. The fu
 **Validate**: prefer the script (below); fall back to the manual checklist in `references/validation.md`. Always finish a validation with a qualitative pass — the script checks structure, not whether problems are real tensions or solutions are actionable.
 
 **Graph view** (any operation, on request): emit a Mermaid `graph TD` built from each pattern's `links_down` (solid `-->`), grouped by scale with `subgraph` blocks, optionally adding `-.-` sympathy and `x--x` tension edges. Mermaid is plain text and renders in most hosts without binaries. In the single-doc shape this block is canonical, not decorative — the validator reads relations from it. If Graphviz is confirmed present and the user wants an image, a DOT file may be rendered instead — but never depend on it.
+
+## Context discipline & model weight
+
+The artifact is designed so that correct work never requires the whole language in context:
+
+- **Working set for Add/update/Apply**: this SKILL.md, the one routed reference, `PATHFINDER.md`, `index.md`, and only the *link-adjacent* patterns (the band above and below the insertion point). Never load every pattern file; the index is the compressed map of the network — the sequence of patterns is its own summary. This is also a reason to prefer the folder shape when long sessions or lighter models are anticipated: single-doc forces the whole corpus into the window.
+- **Batch–validate–drop**: write one scale band, run the validator, fix, then drop the written bodies from context (files are canonical — see Exit). Largest-first ordering means each new pattern links upward only into work already fixed on disk. The validator is external memory: global consistency (reciprocity, index coverage, dangling links) is exactly what a context-limited session drops first, so lean on the script rather than recall.
+- **Pathfinder first**: `PATHFINDER.md` is a deliberately compressed representation of everything a fresh session needs — scope, gradient, conventions, provenance. A session loading only pathfinder + index can act correctly on a language it has never read in full.
+- **Mining is incremental**: resume from the pathfinder's provenance markers; never re-read a historical corpus.
+
+Operations differ in how much unfenced judgement they demand, so the minimum sensible model tier differs too. The rule: **writing the fences needs a strong model; working inside them doesn't.**
+
+| Operation | Minimum tier | Why |
+|---|---|---|
+| Validate (script) | light | Mechanical: run, relay grouped output |
+| Add / Apply (pathfinder exists) | mid | Scope, form, and links are externally fenced; the validator catches drift |
+| Validate (qualitative), Mine | strong preferred | The forces test and tension-clustering are subtle discriminations; light models cluster by vocabulary |
+| Create (intake, gradient, naming) | strong | The gradient decision is foundational, made once, and invisible to the validator |
+
+A workable division of labour: a strong model runs intake, sets the pathfinder, and approves the seed table; a lighter model drafts pattern bodies inside those fences; the script plus a strong-model qualitative pass close the loop.
 
 ## Validation script
 
@@ -86,6 +109,4 @@ Alexander's book is copyrighted. This skill encodes the *method and form*, and `
 When an operation completes: summarise what changed (patterns added/edited, validation result, rung used), present the folder or files, and drop pattern-body working text from the conversation — the files are canonical.
 
 ---
-*v0.5 (July 2026) — exemplar-grounded update from a comparative read of scrumbook.org (A Scrum Book), apl-md (the full 253-pattern corpus run through this validator: 0 FAILs, 693 reciprocity warns, ~29% of edges mutual, ~14 links/pattern), and Group Works. New: the **pathfinder** (`references/pathfinder.md`, `PATHFINDER.md` / `## Pathfinder` — purpose, scope, declared gradient, landscape, evidence, growth queue; supersedes the optional README); the **Apply** operation with sequences as first-class artifacts (purpose, entry conditions, steps, cautions; validated links); optional **Known uses** (rule of three, tied to ✻✻) and **Cautions** pattern sections; **gradient** doctrine generalised beyond spatial scale to any declared monotone axis; optional `###` clusters in the index (APL's own two-level structure); validator reporting grouped by category with per-category cap, `--verbose`, and a network-statistics line.*
-*v0.4 (June 2026) — drawn from the Engine 52 worked language. Two delivery shapes are now first-class: the file-per-pattern folder (default) and a single wiki-doc whose embedded `mermaid graph TD` block is the canonical link source. The validator auto-detects shape from its path and gained a single-doc mode (header/scale/confidence + Mermaid relations + problem/therefore presence) and BOM-tolerant reads. Lateral links — `sympathies:` / `tensions:` (mutual; rendered `-.-` and `x--x`) — are now part of the schema and checked in both shapes. Folder checks from v0.3 are unchanged.*
-*v0.3 (June 2026) — validator: `#`-in-name check moved to correct field; reciprocity WARNs halved (one per broken pair); context split uses regex matching `section()` so `## Problem:` is handled correctly; unknown frontmatter keys emit WARN (catches typos); misleading `prose_mentions` comment removed. Docs: `language-structure.md` index rule aligned with `validation.md`; reporting-format example updated to match script output. Cluster: complements skill-architecture/skill-creator; no dependencies on other skills.*
+*v0.6 (July 2026). Full version history: `references/changelog.md`.*

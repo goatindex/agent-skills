@@ -60,12 +60,13 @@ tensions it newly exposes.
 
 - The 2024 restructure working group — trail kept in the wiki, cited in the
   2025 AGM as why the merger held.
-- (One list item per real, independent instance; one to three is healthy.)
+- The library board adopted the same standing record in 2025 after observing
+  the working group's.
 
 ## Cautions
 
-Optional: the known ways this pattern is misapplied — the record becoming a
-compliance artifact nobody reads; retro-writing the trail weeks later.
+The record becomes a compliance artifact nobody reads if it is decoupled
+from the deciding; retro-writing the trail weeks later destroys its value.
 
 ## Links down
 

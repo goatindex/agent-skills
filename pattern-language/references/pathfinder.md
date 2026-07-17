@@ -11,7 +11,7 @@ The pathfinder replaces the old optional `README.md` (an existing README can be 
 
 ## Sections
 
-Core headings (validator-checked, in this order):
+Core headings (the validator checks their presence; the order below is convention, not enforced):
 
 ```markdown
 # Pathfinder — <Language Name>

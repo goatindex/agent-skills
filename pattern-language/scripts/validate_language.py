@@ -106,10 +106,11 @@ def first_bold(section_text):
 
 
 def section(body, heading):
-    """Return body text of '## <heading>' (with optional colon), or None."""
+    """Return body text of '## <heading>' (with optional colon), or None.
+    Case-insensitive: '## Known Uses' satisfies a 'Known uses' lookup."""
     m = re.search(
         rf"^##\s+{re.escape(heading)}:?\s*$(.*?)(?=^##\s|\Z)",
-        body, re.S | re.M
+        body, re.S | re.M | re.I
     )
     return m.group(1) if m else None
 
@@ -242,22 +243,26 @@ def validate_folder(folder, verbose=False):
                 f"{fname}: confidence ✻✻ but no '## Known uses' section (rule of three)"
             )
 
-        # Reciprocity — emit only from the lower-numbered pattern to avoid duplicate WARNs
+        # Reciprocity — a one-way edge has exactly one asserting side, so
+        # checking each pattern's own assertions yields one WARN per edge.
+        # (A former `t > n` guard here silently passed edges asserted only
+        # via links_up — 558 of APL's 1758 edges.)
         for t in fm["links_down"]:
-            if t in nums and t > n and n not in patterns[t]["fm"]["links_up"]:
+            if t in nums and n not in patterns[t]["fm"]["links_up"]:
                 warns.append(
                     f"{fname}: links_down to {patterns[t]['fname']}, "
                     f"but that pattern does not link_up back"
                 )
         for t in fm["links_up"]:
-            if t in nums and t > n and n not in patterns[t]["fm"]["links_down"]:
+            if t in nums and n not in patterns[t]["fm"]["links_down"]:
                 warns.append(
                     f"{fname}: links_up to {patterns[t]['fname']}, "
                     f"but that pattern does not link_down back"
                 )
 
         # Prose-mention checks — use the same regex as section() for the context split
-        context_parts = re.split(r"^## Problem:?\s*$", body, maxsplit=1, flags=re.M)
+        context_parts = re.split(r"^## Problem:?\s*$", body, maxsplit=1,
+                                 flags=re.M | re.I)
         context = context_parts[0] if len(context_parts) > 1 else ""
         linksec = section(body, "Links down") or ""
         for t in fm["links_up"]:
@@ -584,7 +589,7 @@ def report(patterns, fails, warns, rung, stats=None, verbose=False):
     if stats and total:
         c0, c1, c2 = stats["confidence"]
         parts = [f"{total} patterns (✻✻ {c2} / ✻ {c1} / — {c0})",
-                 f"{stats['edges']} edges",
+                 f"{stats['edges']} edge{'s' if stats['edges'] != 1 else ''}",
                  f"{2 * stats['edges'] / total:.1f} links/pattern"]
         if stats["reciprocity"] is not None:
             parts.append(f"{stats['reciprocity']:.0%} reciprocal")

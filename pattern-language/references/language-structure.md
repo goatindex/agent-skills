@@ -6,7 +6,7 @@ A pattern language is more than its patterns: the **ordering is itself content**
 
 A language can be delivered in either of two shapes; both are first-class and both are validatable (`scripts/validate_language.py` auto-detects which from the path).
 
-- **Folder** — one file per pattern plus `index.md` (below). Links live in typed frontmatter, so every structural check runs at full strength. Choose this for larger languages (roughly 25+ patterns), languages that will be grown and machine-checked over time, or Obsidian/apl-md workflows. **This is the default.**
+- **Folder** — one file per pattern plus `index.md` (below). Links live in typed frontmatter, so every structural check runs at full strength, and sessions can load only the patterns they need (see SKILL.md § Context discipline). Right at any size — a 5-pattern seed or a 250-pattern corpus. **This is the default.**
 - **Single network-doc** — the whole language in one `.md` file with an embedded `mermaid graph TD` block, a generative sequence, and appendices. Choose this for small-to-medium languages hosted on a wiki (GitHub/Obsidian wiki page), where one readable page beats a folder of files. In this shape **the Mermaid block is the canonical link source** — see "Graph view" below for the edge grammar — and pattern identity/scale/confidence are read from `## N. Name ✻` headers and `# SCALE …` band headers. Problem and Therefore are inlined as bold prose rather than `##` subheadings.
 
 Pick by host and size, not by decree. Do not hand-maintain both shapes for the same language; if you need both views, keep one canonical and generate the other. When unsure, default to the folder — it loses no checks.
