@@ -23,7 +23,10 @@ both real, and they are opposites. Gardens that made everything communal
 watched the unglamorous beds go feral by midsummer. Gardens that fenced
 everything into private allotments watched members stop talking to each
 other. The resolution used by every thriving crew we found is stewardship:
-named responsibility without exclusive ownership.
+named responsibility without exclusive ownership. Open-source
+maintainership (CODEOWNERS files) encodes the same resolution to the same
+tension in a different commons — corroboration that the shape is sound,
+though not an instance of this pattern.
 
 ## Therefore
 
@@ -34,11 +37,12 @@ a conversation, not a list.**
 ## Known uses
 
 - Northcote community garden: steward tags on every bed since 2019; the only
-  garden of the three studied with zero abandoned beds.
+  garden of the three we looked at with zero abandoned beds.
 - The folded garden adopted stewards in its final year — too late, but the
   stewarded beds were the last ones alive.
-- Open-source maintainership (CODEOWNERS files) is the same resolution to the
-  same tension in a different commons.
+- Fern Street garden copied the tag system in 2023 after a working-bee
+  visit to Northcote; their coordinator reports the same effect two seasons
+  in.
 
 ## Cautions
 

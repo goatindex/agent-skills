@@ -22,6 +22,7 @@ FAIL items block; WARN items are reported but don't block. The script docstring 
 - [ ] Lateral links: every `sympathies` / `tensions` target exists and is not self-referential. (FAIL on missing/self; WARN — emitted once — when a relation is one-sided, since both are mutual.)
 - [ ] `PATHFINDER.md` exists and carries the five core headings (Purpose & audience, Scope, The gradient, Landscape & key references, Evidence & provenance — see `references/pathfinder.md`). (WARN on missing file or heading)
 - [ ] A ✻✻ (confidence 2) pattern has a `## Known uses` section. (WARN — rule of three)
+- [ ] A starred (✻ or ✻✻) pattern's Known uses read as *instances*, not convention/corroboration: vague-plural language ("recurring", "consistently", "convention", "genre", "corroborat…", "widely", "typically", "generally") triggers a WARN prompting the human check the script cannot make — verify each item names a specific, dateable instance. (WARN — heuristic; false positives possible and acceptable)
 - [ ] `sequences/*.md`: every pattern link resolves to an existing pattern (FAIL); step numbers run down the gradient, i.e. ascending (WARN, reported once per sequence); a sequence file with no pattern links at all (WARN).
 
 *Note: two spec rules are not yet enforced by the script — treat them as manual checks:*
@@ -40,7 +41,7 @@ Apply per pattern, then to the whole. Report findings ranked by severity, with t
 
 1. **Forces test.** Does the problem statement name a genuine tension? An absence ("no X exists") restated as need is a fail — find the underlying conflict of forces or cut the pattern.
 2. **Actionability test.** Could a competent reader act on the Therefore tomorrow without asking what it means? Could two readers act on it and produce usefully *different* implementations? Both must be yes.
-3. **Evidence proportionality.** Does the body's evidence justify the confidence rating? ✻✻ with a paragraph of vibes is miscalibrated.
+3. **Evidence proportionality.** Does the body's evidence justify the confidence rating? ✻✻ with a paragraph of vibes is miscalibrated. Check the *tier* of each known use against `pattern-form.md` rule 6: instances promote; designed-system corroboration and narrative convention do not, at any density, and their presence in a Known-uses list is itself a finding. Judge the asterisks against the evidence semantics the pathfinder declares — a play-facing language whose ✻✻ patterns cite genre convention rather than documented play is miscalibrated even if it discloses the substitution.
 4. **Name test.** Could the name be used in a working sentence by practitioners ("we need a *Quiet Back* here")? Is it a concrete, evocative **noun phrase naming the solution** — not the problem, and not an instruction? Two failure modes seen in weak-model output, both to flag: **imperative-verb names** ("Recover from Failure," "Define Core Roles" — they name the *action*, so you cannot say "put a Recover-from-Failure here") and **abstract-concept names** ("Reputation Economy," "Lance Balance" — they name the *topic*, not the resolution). A mechanical verb-lint is deliberately not provided: it false-positives on legitimate gerund names (APL's "Sleeping in Public," "Dancing in the Street"), so naming stays a judgement check.
 5. **Single resolution.** One tension, one instruction. Two instructions = split candidate.
 

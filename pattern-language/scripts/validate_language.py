@@ -29,6 +29,12 @@ LATERAL_KEYS = ("sympathies", "tensions")
 PATHFINDER_CORE = ("Purpose & audience", "Scope", "The gradient",
                    "Landscape & key references", "Evidence & provenance")
 WARN_CAP = 10  # per-category display cap unless --verbose
+# Vague-plural / corroboration vocabulary: a genuine known-use instance is
+# nameable and dateable; convention can only be described in these terms.
+# Heuristic — false positives are acceptable at WARN severity.
+VAGUE_KNOWN_USE_RE = re.compile(
+    r"\b(recurring|consistently|convention\w*|genre|corroborat\w*"
+    r"|widely|typically|generally)\b", re.I)
 AST = {0: "", 1: "✻", 2: "✻✻"}  # ✻
 STARS = "✻★"  # ✻ or ★ — both accepted when reading a single-doc header
 
@@ -237,10 +243,20 @@ def validate_folder(folder, verbose=False):
         if not fm["links_up"] and not fm["links_down"]:
             warns.append(f"{fname}: orphan — no links in either direction")
 
-        # Rule of three: a ✻✻ rating is earned by documented known uses.
-        if fm["confidence"] == 2 and section(body, "Known uses") is None:
+        # Rule of three: a ✻✻ rating is earned by documented known uses,
+        # and known uses must be instances, not convention/corroboration.
+        known_uses = section(body, "Known uses")
+        if fm["confidence"] == 2 and known_uses is None:
             warns.append(
                 f"{fname}: confidence ✻✻ but no '## Known uses' section (rule of three)"
+            )
+        elif fm["confidence"] >= 1 and known_uses and \
+                VAGUE_KNOWN_USE_RE.search(known_uses):
+            warns.append(
+                f"{fname}: Known uses for a starred pattern read like "
+                f"convention/corroboration, not specific instances — verify "
+                f"each item names a real, dateable instance (instances "
+                f"promote confidence; corroboration does not)"
             )
 
         # Reciprocity — a one-way edge has exactly one asserting side, so

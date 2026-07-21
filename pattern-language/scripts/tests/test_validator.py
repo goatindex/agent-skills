@@ -141,6 +141,28 @@ def test_starred_without_known_uses_warns():
         _, out = run(d)
         check("warn fires", "no '## Known uses' section" in out, out)
 
+def test_vague_known_uses_warns():
+    # Regression from baseline run 4 (Sonnet x Shadowrun): five patterns
+    # promoted to starred confidence on genre convention. Vague-plural known
+    # uses on a starred pattern must WARN; specific instances must not.
+    print("vague known-uses on starred pattern warns; instances don't")
+    vague = ("\n## Known uses\n\n- Recurring convention across genre fiction "
+             "and actual play shows.\n")
+    specific = ("\n## Known uses\n\n- The 2024 restructure group kept the "
+                "trail; the merger held.\n")
+    with tempfile.TemporaryDirectory() as d:
+        f1 = write_pattern(d, 1, "Big", confidence=1, extra=vague)
+        write_index(d, [(1, "Big", f1, "Large", 1)])
+        write_pathfinder(d)
+        _, out = run(d)
+        check("vague warn fires", "read like" in out, out)
+    with tempfile.TemporaryDirectory() as d:
+        f1 = write_pattern(d, 1, "Big", confidence=1, extra=specific)
+        write_index(d, [(1, "Big", f1, "Large", 1)])
+        write_pathfinder(d)
+        _, out = run(d)
+        check("specific instance passes", "read like" not in out, out)
+
 def test_pathfinder_checks():
     print("pathfinder presence and headings")
     with tempfile.TemporaryDirectory() as d:

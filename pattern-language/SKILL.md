@@ -87,7 +87,7 @@ Division of labour: a strong model runs intake, sets the pathfinder, and approve
 python3 scripts/validate_language.py [--verbose] <language-folder | language-doc.md>
 ```
 
-Full check list and severities: `references/validation.md` (single source). Folder summary: frontmatter integrity; unique numbers; link targets exist; header/frontmatter agreement; bolded Problem/Therefore statements; lateral-link (sympathy/tension) targets exist and are mutual; index list-item coverage (prose cross-links in the index are ignored — only list items count); pathfinder presence and core headings; ✻✻ patterns carry Known uses; sequence links resolve. Single-doc summary: headers give identity/scale/confidence, the `mermaid` block gives every relation, and the checked subset is the link/orphan/problem-therefore/pathfinder set (frontmatter and index checks do not apply). Exits non-zero on any FAIL. WARNs do not block; they print grouped by category, capped at 10 per category (`--verbose` lifts the cap), followed by a network-statistics line (edges, links/pattern, reciprocity, orphans) interpreted against the benchmarks in `references/validation.md`.
+Full check list and severities: `references/validation.md` (single source). Folder summary: frontmatter integrity; unique numbers; link targets exist; header/frontmatter agreement; bolded Problem/Therefore statements; lateral-link (sympathy/tension) targets exist and are mutual; index list-item coverage (prose cross-links in the index are ignored — only list items count); pathfinder presence and core headings; ✻✻ patterns carry Known uses, and starred known-uses are screened for convention-vs-instance vocabulary; sequence links resolve. Single-doc summary: headers give identity/scale/confidence, the `mermaid` block gives every relation, and the checked subset is the link/orphan/problem-therefore/pathfinder set (frontmatter and index checks do not apply). Exits non-zero on any FAIL. WARNs do not block; they print grouped by category, capped at 10 per category (`--verbose` lifts the cap), followed by a network-statistics line (edges, links/pattern, reciprocity, orphans) interpreted against the benchmarks in `references/validation.md`.
 
 ## Graceful Degradation Ladder
 
@@ -109,4 +109,4 @@ Alexander's book is copyrighted. This skill encodes the *method and form*, and `
 When an operation completes: summarise what changed (patterns added/edited, validation result, rung used), present the folder or files, and drop pattern-body working text from the conversation — the files are canonical.
 
 ---
-*v0.6.2 (July 2026). Full version history: `references/changelog.md`.*
+*v0.7 (July 2026). Full version history: `references/changelog.md`.*
