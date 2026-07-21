@@ -1,21 +1,20 @@
 ---
 name: decision-brief
-description: Produce a prioritised decision brief / advisory summary with a recommendations table, per-option narrative tradeoffs, and dive-deeper + open-decisions menus. Use when Kirk asks for analysis, options, architecture trade-offs, or any "what should I do about X" question and has NOT said build/go/just-do-it.
+description: Produce a prioritised decision brief / advisory summary with a recommendations table, per-option narrative tradeoffs, and dive-deeper + open-decisions menus. Use when the user asks for analysis, options, architecture trade-offs, or any "what should I do about X" question and has NOT said build/go/just-do-it.
 ---
 
 # /decision-brief
 
 Trigger: "decision brief", "advisory", "what are my options", "help me think through",
-"recommendations + tradeoffs", or any analysis request where Kirk hasn't said "build" /
-"go" / "just do it". This is the heavyweight, on-demand version of the standing
-advisory-format preference (see the `advisory-format` memory).
+"recommendations + tradeoffs", or any analysis request where the user hasn't said "build" /
+"go" / "just do it".
 
 ---
 
 ## Output structure
 
 ### 1. Framing (one line)
-State the question being answered and why it matters now. No preamble.
+State the question being answered and why it matters now. State any assumptions. No preamble.
 
 ### 2. Prioritised recommendations table
 
@@ -23,11 +22,11 @@ State the question being answered and why it matters now. No preamble.
 |------|--------|---------|----------|------------------|
 | 1 | … | Recommended / Viable / Avoid | upside vs. cost or risk | go (no decision) / decision needed |
 
-- Rank by best fit for Kirk's stated goal.
+- Rank by best fit for the userd stated goal.
 - Verdict ∈ **Recommended**, **Viable**, **Avoid**.
-- Tradeoff: one upside and one cost/risk, separated by " vs. ".
+- Tradeoff: upside and cost/risk, the most meaningful tensions, separated by " vs. ".
 - Decision-needed tag: `go (no decision)` if it can proceed without further input;
-  `decision needed` if Kirk must choose or a condition must be met first.
+  `decision needed` if the user must choose or a condition must be met first.
 
 ### 3. Per-option narrative
 For each row: one short paragraph — what it is in plain language, why it ranks where it
@@ -37,7 +36,7 @@ does, and the explicit tradeoff (what you gain, what you give up or risk).
 Numbered, one line each — follow-on analyses available on request.
 
 ### 5. Further investigation / open decisions
-Items needing more info or an explicit Kirk decision. Tag each `go (no decision)` or
+Items needing more info or an explicit user decision. Tag each `go (no decision)` or
 `decision needed`. Always present, even if short.
 
 ---
@@ -70,6 +69,6 @@ equivalent `subTest` pattern.
 ---
 
 ## Usage notes
-- Do NOT jump to implementation unless Kirk says "build" / "go" / "write the code".
+- Do NOT jump to implementation unless the user says "build" / "go" / "write the code".
 - Keep the table to options that matter; omit noise.
-- Match Kirk's register: succinct, plain, no filler.
+- Match users register: succinct, plain, no filler.
