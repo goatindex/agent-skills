@@ -26,7 +26,7 @@ Read `references/pattern-form.md` before writing or editing any pattern body —
 
 A pattern language comes in one of **two delivery shapes**, both first-class and both validatable (see `references/language-structure.md`):
 
-- **Folder** (default) — one markdown file per pattern plus an `index.md` carrying the ordered sequence with connective prose, a `PATHFINDER.md` self-description, and optionally `sequences/` for named sequences. Links live in typed frontmatter, so every structural check runs at full strength. Best for larger languages, languages grown over time, and Obsidian/apl-md workflows.
+- **Folder** (default) — one markdown file per pattern plus an `index.md` carrying the ordered sequence with connective prose, a `PATHFINDER.md` self-description, and optionally `sequences/` for named sequences. Links live in typed frontmatter, so every structural check runs at full strength and sessions load only the patterns they need. Right at any size — a 5-pattern seed or a 250-pattern corpus — and the shape to prefer whenever a language will be grown over time, machine-checked, or run by lighter models.
 - **Single network-doc** — the whole language in one `.md` with an embedded `mermaid graph TD` block (the canonical link source), a generative sequence, and appendices including a `## Pathfinder` section. Best for small-to-medium languages hosted on a wiki page.
 
 Either way, the language carries a **pathfinder** (`references/pathfinder.md`): purpose, scope, declared gradient, landscape and key references, evidence base, and growth queue. It is written at create time from the intake answers and re-read before any later operation — it is what keeps growth grounded and scoped.
@@ -61,14 +61,14 @@ These are the things that make output Alexandrian rather than a tip list. The fu
 
 ## Context discipline & model weight
 
-The artifact is designed so that correct work never requires the whole language in context:
+Correct work never requires the whole language in context:
 
-- **Working set for Add/update/Apply**: this SKILL.md, the one routed reference, `PATHFINDER.md`, `index.md`, and only the *link-adjacent* patterns (the band above and below the insertion point). Never load every pattern file; the index is the compressed map of the network — the sequence of patterns is its own summary. This is also a reason to prefer the folder shape when long sessions or lighter models are anticipated: single-doc forces the whole corpus into the window.
-- **Batch–validate–drop**: write one scale band, run the validator, fix, then drop the written bodies from context (files are canonical — see Exit). Largest-first ordering means each new pattern links upward only into work already fixed on disk. The validator is external memory: global consistency (reciprocity, index coverage, dangling links) is exactly what a context-limited session drops first, so lean on the script rather than recall.
-- **Pathfinder first**: `PATHFINDER.md` is a deliberately compressed representation of everything a fresh session needs — scope, gradient, conventions, provenance. A session loading only pathfinder + index can act correctly on a language it has never read in full.
+- **Working set for Add/update/Apply**: this SKILL.md, the one routed reference, `PATHFINDER.md`, `index.md`, and only the *link-adjacent* patterns (the band above and below the insertion point). Never load every pattern file — the index is the network's compressed map. (A reason to prefer the folder shape for long sessions or lighter models: single-doc forces the whole corpus into the window.)
+- **Batch–validate–drop**: write one scale band, validate, fix, then drop the bodies from context (files are canonical — see Exit). Largest-first means each new pattern links upward only into work already on disk. The validator is external memory — global consistency (reciprocity, coverage, dangling links) is what a context-limited session drops first.
+- **Pathfinder first**: a session loading only `PATHFINDER.md` + `index.md` can act correctly on a language it has never read in full — that is what the pathfinder is compressed for.
 - **Mining is incremental**: resume from the pathfinder's provenance markers; never re-read a historical corpus.
 
-Operations differ in how much unfenced judgement they demand, so the minimum sensible model tier differs too. The rule: **writing the fences needs a strong model; working inside them doesn't.**
+Operations differ in how much unfenced judgement they demand, so the minimum model tier differs. The rule: **writing the fences needs a strong model; working inside them doesn't.**
 
 | Operation | Minimum tier | Why |
 |---|---|---|
@@ -77,7 +77,7 @@ Operations differ in how much unfenced judgement they demand, so the minimum sen
 | Validate (qualitative), Mine | strong preferred | The forces test and tension-clustering are subtle discriminations; light models cluster by vocabulary |
 | Create (intake, gradient, naming) | strong | The gradient decision is foundational, made once, and invisible to the validator |
 
-A workable division of labour: a strong model runs intake, sets the pathfinder, and approves the seed table; a lighter model drafts pattern bodies inside those fences; the script plus a strong-model qualitative pass close the loop.
+Division of labour: a strong model runs intake, sets the pathfinder, and approves the seed table; a lighter model drafts bodies inside those fences; the script plus a strong-model qualitative pass close the loop.
 
 ## Validation script
 
