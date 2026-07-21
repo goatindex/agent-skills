@@ -109,4 +109,4 @@ Alexander's book is copyrighted. This skill encodes the *method and form*, and `
 When an operation completes: summarise what changed (patterns added/edited, validation result, rung used), present the folder or files, and drop pattern-body working text from the conversation — the files are canonical.
 
 ---
-*v0.6.1 (July 2026). Full version history: `references/changelog.md`.*
+*v0.6.2 (July 2026). Full version history: `references/changelog.md`.*
