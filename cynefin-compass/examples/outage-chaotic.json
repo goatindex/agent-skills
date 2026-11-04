@@ -1,0 +1,42 @@
+{
+  "schema_version": "1",
+  "mode": "lite",
+  "situation": "The payments API returns errors for all customers. Error rate rose from 0% to 100% in six minutes and the cause is not known.",
+  "gate": {
+    "changes_approach": true,
+    "reason": "The team is starting a root-cause meeting. Stability must come first."
+  },
+  "is_single_problem": true,
+  "pieces": [
+    {
+      "id": "outage",
+      "name": "Payments API total failure",
+      "domain": "chaotic",
+      "procedure_answers": {
+        "active_crisis": true,
+        "known_practice_applies": false,
+        "expert_can_determine_before_acting": false,
+        "hindsight_only": false
+      },
+      "evidence": [
+        "Every payment request fails and revenue loss is running now.",
+        "Three alerts fired at once and no change record links to the cause."
+      ],
+      "second_reading": {
+        "domain": "complicated",
+        "tipping_condition": "A rollback restores service and the cause becomes a normal investigation."
+      },
+      "boundary_risk": "Staying in act mode after stability returns. Move to analysis once errors stop.",
+      "approach": {
+        "sequence": "act-sense-respond",
+        "summary": "Restore service first. Defer root-cause analysis.",
+        "stabilising_action": "Roll back the most recent release on the payments service now.",
+        "sense_after": "Error rate and p95 latency for 15 minutes after rollback. Then decide: investigate or escalate."
+      },
+      "reclassify_triggers": [
+        "Error rate drops to normal. Reclassify the cause as Complicated and open a post-incident review.",
+        "The rollback has no effect. Choose the next stabilising action. Do not start analysis yet."
+      ]
+    }
+  ]
+}

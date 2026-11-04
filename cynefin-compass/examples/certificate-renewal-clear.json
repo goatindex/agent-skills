@@ -1,0 +1,41 @@
+{
+  "schema_version": "1",
+  "mode": "lite",
+  "situation": "The team must renew the TLS certificate for the internal wiki before it expires next week. The team has renewed it every year using a runbook.",
+  "gate": {
+    "changes_approach": true,
+    "reason": "The team asks whether to plan this as a project. The domain tells them to follow the runbook only."
+  },
+  "is_single_problem": true,
+  "pieces": [
+    {
+      "id": "cert-renewal",
+      "name": "Annual internal certificate renewal",
+      "domain": "clear",
+      "procedure_answers": {
+        "active_crisis": false,
+        "known_practice_applies": true,
+        "expert_can_determine_before_acting": false,
+        "hindsight_only": false
+      },
+      "evidence": [
+        "A written runbook exists and the team ran it successfully for the last three years.",
+        "The certificate authority and the install steps have not changed since the last renewal."
+      ],
+      "second_reading": {
+        "domain": "chaotic",
+        "tipping_condition": "The certificate expires before renewal and the wiki goes down for all staff."
+      },
+      "boundary_risk": "Complacency. If nobody owns the calendar reminder, the expiry date passes and the problem becomes a crisis.",
+      "approach": {
+        "sequence": "sense-categorise-respond",
+        "summary": "Follow the runbook. Do not redesign it.",
+        "practice": "Run the certificate renewal runbook this week and confirm the new expiry date in the browser."
+      },
+      "reclassify_triggers": [
+        "The certificate authority changes its process. Treat the renewal as Complicated until the runbook is updated.",
+        "The certificate expires with no replacement. Treat it as Chaotic and restore access first."
+      ]
+    }
+  ]
+}

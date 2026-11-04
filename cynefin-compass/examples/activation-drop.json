@@ -1,0 +1,97 @@
+{
+  "schema_version": "1",
+  "mode": "full",
+  "situation": "Activation fell 12% after the redesigned onboarding flow shipped. Leadership asks for a plan to fix it by Friday.",
+  "gate": {
+    "changes_approach": true,
+    "reason": "A single fix plan would treat a discoverable user-behaviour problem as a knowable one."
+  },
+  "is_single_problem": false,
+  "pieces": [
+    {
+      "id": "regression",
+      "name": "Possible bug in the new flow",
+      "domain": "complicated",
+      "procedure_answers": {
+        "active_crisis": false,
+        "known_practice_applies": false,
+        "expert_can_determine_before_acting": true,
+        "hindsight_only": false
+      },
+      "evidence": [
+        "The drop began on the day of the release, so a code cause is plausible.",
+        "Funnel data and session replay already exist and can show where users stop."
+      ],
+      "second_reading": {
+        "domain": "clear",
+        "tipping_condition": "The funnel shows one obviously broken step with an error in the logs."
+      },
+      "boundary_risk": null,
+      "approach": {
+        "sequence": "sense-analyse-respond",
+        "summary": "Analyse the funnel and replays for a regression. Fix it if found.",
+        "analysis_needed": "Step-by-step funnel comparison before and after release, plus 20 session replays at the drop point.",
+        "experts": ["Product analyst", "Front-end engineer who built the flow"]
+      },
+      "reclassify_triggers": [
+        "The analysis finds a plain bug that explains the full 12%. Treat the fix as Clear work."
+      ]
+    },
+    {
+      "id": "behaviour",
+      "name": "Why real users do not activate",
+      "domain": "complex",
+      "procedure_answers": {
+        "active_crisis": false,
+        "known_practice_applies": false,
+        "expert_can_determine_before_acting": false,
+        "hindsight_only": true
+      },
+      "evidence": [
+        "No team member can say why users stop. Three internal theories contradict each other.",
+        "Earlier onboarding changes had effects that nobody predicted before launch."
+      ],
+      "second_reading": {
+        "domain": "complicated",
+        "tipping_condition": "The regression analysis explains the whole drop and leaves nothing to discover."
+      },
+      "boundary_risk": "Drifts toward Complicated if the team accepts one theory without testing it.",
+      "approach": {
+        "sequence": "probe-sense-respond",
+        "summary": "Run small experiments on real users. Do not write the full redesign yet.",
+        "probes": [
+          {
+            "action": "Show the old first screen to 10% of new signups.",
+            "safe_to_fail": {
+              "reversible": true,
+              "bounded_cost": "10% of traffic for 5 days",
+              "why": "A feature flag turns it off at once and the old screen is still in the codebase."
+            },
+            "signal": "Activation rate of the 10% group against the new-flow group.",
+            "amplify_if": "The old screen activates at least 5 points higher.",
+            "dampen_if": "No difference after 1,000 signups per arm.",
+            "time_box": "5 days",
+            "owner": "Growth engineer"
+          },
+          {
+            "action": "Add a one-question prompt at the drop point: what stopped you?",
+            "safe_to_fail": {
+              "reversible": true,
+              "bounded_cost": "One small UI element, half a day of work",
+              "why": "It is optional, can be removed by flag, and does not change the flow."
+            },
+            "signal": "Share of answers that fall into the same 2 or 3 themes.",
+            "amplify_if": "One theme holds more than 30% of answers.",
+            "dampen_if": "Under 5% of users answer, or answers are all different.",
+            "time_box": "1 week",
+            "owner": "Product designer"
+          }
+        ]
+      },
+      "reclassify_triggers": [
+        "Probes show a stable, repeatable cause. Move the fix to Complicated and plan it.",
+        "Probes show an effect nobody predicted. Stay Complex and run the next probe."
+      ]
+    }
+  ]
+}

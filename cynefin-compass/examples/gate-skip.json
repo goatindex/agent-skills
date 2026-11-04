@@ -1,0 +1,11 @@
+{
+  "schema_version": "1",
+  "mode": "lite",
+  "situation": "Rename the function parse_cfg to parse_config in one module and update its three callers.",
+  "gate": {
+    "changes_approach": false,
+    "reason": "Bounded edit with a known path. The domain would not change the next step."
+  },
+  "is_single_problem": true,
+  "pieces": []
+}

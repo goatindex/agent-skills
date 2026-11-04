@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cynefin-compass/assessment/1",
+  "title": "Cynefin Compass assessment",
+  "description": "Input contract for scripts/validate_assessment.py and scripts/render_report.py. The validator also enforces cross-field rules that JSON Schema cannot express (see references/classification.md, section 'Lint rules').",
+  "type": "object",
+  "required": ["schema_version", "mode", "situation", "gate", "is_single_problem", "pieces"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1" },
+    "mode": { "enum": ["lite", "full"] },
+    "situation": { "type": "string", "minLength": 1, "description": "2-4 sentences. What is decided or faced, in concrete terms." },
+    "gate": {
+      "type": "object",
+      "required": ["changes_approach", "reason"],
+      "additionalProperties": false,
+      "properties": {
+        "changes_approach": { "type": "boolean", "description": "true = naming the domain changes the next step. false = skip the framework; pieces must be empty." },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "is_single_problem": { "type": "boolean", "description": "false = the situation was decomposed. Then pieces has 2 or more items." },
+    "pieces": { "type": "array", "items": { "$ref": "#/$defs/piece" } }
+  },
+  "$defs": {
+    "domain": { "enum": ["clear", "complicated", "complex", "chaotic"] },
+    "piece": {
+      "type": "object",
+      "required": ["id", "name", "domain", "procedure_answers", "evidence", "second_reading", "boundary_risk", "approach", "reclassify_triggers"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "name": { "type": "string", "minLength": 1 },
+        "domain": { "$ref": "#/$defs/domain" },
+        "procedure_answers": {
+          "type": "object",
+          "required": ["active_crisis", "known_practice_applies", "expert_can_determine_before_acting", "hindsight_only"],
+          "additionalProperties": false,
+          "properties": {
+            "active_crisis": { "type": "boolean" },
+            "known_practice_applies": { "type": "boolean" },
+            "expert_can_determine_before_acting": { "type": "boolean" },
+            "hindsight_only": { "type": "boolean" }
+          }
+        },
+        "override_reason": { "type": "string", "description": "Required when domain differs from the domain the procedure answers give." },
+        "evidence": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "Facts of THIS situation, not generic theory." },
+        "second_reading": {
+          "type": "object",
+          "required": ["domain", "tipping_condition"],
+          "additionalProperties": false,
+          "properties": {
+            "domain": { "$ref": "#/$defs/domain" },
+            "tipping_condition": { "type": "string", "minLength": 1 }
+          }
+        },
+        "boundary_risk": { "type": ["string", "null"], "description": "Required (string) for clear: the complacency check." },
+        "approach": { "$ref": "#/$defs/approach" },
+        "reclassify_triggers": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+      }
+    },
+    "approach": {
+      "type": "object",
+      "required": ["sequence", "summary"],
+      "properties": {
+        "sequence": { "enum": ["sense-categorise-respond", "sense-analyse-respond", "probe-sense-respond", "act-sense-respond"] },
+        "summary": { "type": "string", "minLength": 1 },
+        "practice": { "type": "string", "description": "clear only: the known practice to apply." },
+        "analysis_needed": { "type": "string", "description": "complicated only." },
+        "experts": { "type": "array", "items": { "type": "string" }, "description": "complicated only." },
+        "probes": { "type": "array", "minItems": 1, "maxItems": 3, "items": { "$ref": "#/$defs/probe" }, "description": "complex only." },
+        "stabilising_action": { "type": "string", "description": "chaotic only: exactly one action, taken now." },
+        "sense_after": { "type": "string", "description": "chaotic only: what to observe once stable." }
+      }
+    },
+    "probe": {
+      "type": "object",
+      "required": ["action", "safe_to_fail", "signal", "amplify_if", "dampen_if", "time_box"],
+      "additionalProperties": false,
+      "properties": {
+        "action": { "type": "string", "minLength": 1 },
+        "safe_to_fail": {
+          "type": "object",
+          "required": ["reversible", "bounded_cost", "why"],
+          "additionalProperties": false,
+          "properties": {
+            "reversible": { "const": true },
+            "bounded_cost": { "type": "string", "minLength": 1 },
+            "why": { "type": "string", "minLength": 1 }
+          }
+        },
+        "signal": { "type": "string", "minLength": 1 },
+        "amplify_if": { "type": "string", "minLength": 1 },
+        "dampen_if": { "type": "string", "minLength": 1 },
+        "time_box": { "type": "string", "minLength": 1 },
+        "owner": { "type": "string" }
+      }
+    }
+  }
+}

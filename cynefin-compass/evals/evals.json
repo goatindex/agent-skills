@@ -1,0 +1,35 @@
+{
+  "description": "Regression cases for cynefin-compass. gate_cases are for model evals: run the prompt and check that the skill triggers (or skips) as expected. classification_cases are checked by scripts/tests/test_cynefin_compass.py against classify_from_answers().",
+  "gate_cases": [
+    { "id": "g01", "prompt": "Leadership wants a full plan to fix our falling activation rate by Friday. Nobody knows why users leave.", "expect_changes_approach": true },
+    { "id": "g02", "prompt": "Half the team wants more analysis before we pick a pricing model. The other half wants to try prices on real customers. How should we decide?", "expect_changes_approach": true },
+    { "id": "g03", "prompt": "The database is down, customers cannot log in, and we do not know why. We are about to start a post-mortem meeting.", "expect_changes_approach": true },
+    { "id": "g04", "prompt": "Our deployment runbook has worked for two years. Last week three deploys failed in new ways. What now?", "expect_changes_approach": true },
+    { "id": "g05", "prompt": "We are merging two teams with different cultures. Write a 12-month integration plan.", "expect_changes_approach": true },
+    { "id": "g06", "prompt": "Should we adopt a new security tool? We need an expert comparison and a market reaction we cannot predict.", "expect_changes_approach": true },
+    { "id": "g07", "prompt": "Help me decide how to approach modernising a legacy system that nobody fully understands, with shifting requirements.", "expect_changes_approach": true },
+    { "id": "g08", "prompt": "Use Cynefin to assess whether we should plan or experiment with our new onboarding programme.", "expect_changes_approach": true },
+    { "id": "g09", "prompt": "Our incident process is considered solved, so nobody reviews it. Is that safe?", "expect_changes_approach": true },
+    { "id": "g10", "prompt": "A client keeps changing requirements and our estimate process is failing. What approach fits?", "expect_changes_approach": true },
+    { "id": "n01", "prompt": "Rename the function parse_cfg to parse_config and update the callers.", "expect_changes_approach": false },
+    { "id": "n02", "prompt": "Convert this CSV file to JSON.", "expect_changes_approach": false },
+    { "id": "n03", "prompt": "What does the word Cynefin mean?", "expect_changes_approach": false },
+    { "id": "n04", "prompt": "Fix the failing unit test in test_parser.py. The error says expected 3 got 2.", "expect_changes_approach": false },
+    { "id": "n05", "prompt": "Write a SQL query that counts orders per customer last month.", "expect_changes_approach": false },
+    { "id": "n06", "prompt": "Renew the TLS certificate using the runbook. Tell me the commands.", "expect_changes_approach": false },
+    { "id": "n07", "prompt": "Summarise this meeting transcript in five bullet points.", "expect_changes_approach": false },
+    { "id": "n08", "prompt": "Add a docstring to every public function in utils.py.", "expect_changes_approach": false },
+    { "id": "n09", "prompt": "Format this document with the company template.", "expect_changes_approach": false },
+    { "id": "n10", "prompt": "Bump the version number to 2.4.1 in package.json and the changelog.", "expect_changes_approach": false }
+  ],
+  "classification_cases": [
+    { "id": "c01", "scenario": "Payments API fails for everyone and the cause is unknown.", "answers": { "active_crisis": true, "known_practice_applies": false, "expert_can_determine_before_acting": false, "hindsight_only": false }, "expected_domain": "chaotic" },
+    { "id": "c02", "scenario": "Annual certificate renewal with a current runbook.", "answers": { "active_crisis": false, "known_practice_applies": true, "expert_can_determine_before_acting": false, "hindsight_only": false }, "expected_domain": "clear" },
+    { "id": "c03", "scenario": "Find why the nightly batch job is slow. Profiling data exists.", "answers": { "active_crisis": false, "known_practice_applies": false, "expert_can_determine_before_acting": true, "hindsight_only": false }, "expected_domain": "complicated" },
+    { "id": "c04", "scenario": "Why users leave the onboarding flow.", "answers": { "active_crisis": false, "known_practice_applies": false, "expert_can_determine_before_acting": false, "hindsight_only": true }, "expected_domain": "complex" },
+    { "id": "c05", "scenario": "Mixed bundle of unrelated issues with no clear shape.", "answers": { "active_crisis": false, "known_practice_applies": false, "expert_can_determine_before_acting": false, "hindsight_only": false }, "expected_domain": "confused" },
+    { "id": "c06", "scenario": "Crisis during a routine task. Crisis wins over a known practice.", "answers": { "active_crisis": true, "known_practice_applies": true, "expert_can_determine_before_acting": false, "hindsight_only": false }, "expected_domain": "chaotic" },
+    { "id": "c07", "scenario": "A known practice applies and an expert could also analyse it. Clear wins.", "answers": { "active_crisis": false, "known_practice_applies": true, "expert_can_determine_before_acting": true, "hindsight_only": false }, "expected_domain": "clear" },
+    { "id": "c08", "scenario": "Experts can analyse the part and the rest only shows in hindsight. Complicated wins by order. Decompose if both parts matter.", "answers": { "active_crisis": false, "known_practice_applies": false, "expert_can_determine_before_acting": true, "hindsight_only": true }, "expected_domain": "complicated" }
+  ]
+}
